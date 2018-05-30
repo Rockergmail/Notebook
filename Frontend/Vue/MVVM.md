@@ -11,6 +11,12 @@ MVP和MVVM的最大区别是：MVVM中，V和VM是双向绑定的
 双向绑定 data binding：
 
 
+数据劫持、发布订阅模式
+
+0. 迭代处理object，是的数据劫持
+1. this.x  this._data.x
+2. computed 缓存？
+
 
 ---
 
