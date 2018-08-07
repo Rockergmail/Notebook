@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        var util = {
+            
+            add: function (arr) {
+
+                if (Array.isArray(arr)) {
+
+                    return arr.reduce((acc, cur) => acc + cur);
+                } else {
+
+                    console.warn(arr + ' must be a array');
+                }
+            },
+
+            multi: function (arr) {
+
+                if (Array.isArray(arr)) {
+
+                    return arr.reduce((acc, cur) => acc * cur);
+                } else {
+
+                    console.warn(arr + ' must be a array');
+                }
+            }
+        }
+
+        var a = (function (u) {
+
+            return {
+                add: u.add,
+                multi: u.multi
+            }
+        })(util);
+
+        console.log(a);
+        console.log(a.add([1,2,3]));
+        console.log(a.multi([2,3,4]));
+
+        // what's diff from 模块化 、 实例化
+
+        const JobPost = title => ({
+            title
+        });
+
+        class JobSeeker {
+
+            constructor(name) {
+                this._name = name;
+            }
+
+            notify(jobPost) {
+
+                console.log(`${this._name} has been notified of a new posting: ${jobPost.title}`);
+            }
+        }
+
+        class JobBoard {
+
+            constructor() {
+                this._subscribers = []
+            }
+
+            subscribe(JobSeeker) {
+
+                this._subscribers.push(JobSeeker)
+            }
+
+            addJob(jobPosting) {
+
+                this._subscribers.forEach(subscriber => {
+
+                    subscriber.notify(jobPosting)
+                })
+            }
+        }
+
+        const ALau = new JobSeeker('A Lau');
+        const BLau = new JobSeeker('B Lau');
+        const CLau = new JobSeeker('C Lau');
+
+        const jobBoard = new JobBoard()
+
+        jobBoard.subscribe(ALau);
+        jobBoard.subscribe(BLau);
+        jobBoard.subscribe(CLau);
+
+        jobBoard.addJob(JobPost('Frontend Engineer'));
+    </script>
+</body>
+</html>

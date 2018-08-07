@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <button class="counter-reduce">-</button>
+    <span class="counter">0</span>
+    <button class="counter-add">+</button>
+
+    <script>
+        const MyEvent = (function () {
+
+            let _subscribe, // 订阅操作
+                _publish, // 发布
+                _unsubscribe, // 取消订阅
+                _namespaceList = {};
+
+            _subscribe = (kind, cb) => {
+
+                if (_subscriberList.hasOwnProperty(kind)) {
+
+                    _subscriberList[kind].push(cb);
+                    // 如何知道cb的参数？
+                } else {
+
+                    _subscriberList[kind] = [cb];
+                }
+            };
+
+            _unsubscribe = (kind, cb) => {
+
+                if (_subscriberList.hasOwnProperty(kind) && _subscriberList[kind].indexOf(cb) > -1) {
+
+                    _subscriberList[kind].splice(_subscriberList[kind].indexOf(cb), 1);
+                    console.log('取消订阅成功');
+                } else {
+
+                    console.log('不存在');
+                }
+            };
+
+            _publish = (kind) => {
+
+                if (_subscriberList.hasOwnProperty(kind)) {
+
+                    _subscriberList[kind].forEach(cb => {
+
+                        cb();
+                    });
+                } else {
+
+                    console.log('不存在');
+                }
+            };
+
+            _namespace = (ns) => {
+
+                // FIXME: 这里的ns变量是
+                ns = ns ? ns : 'default';
+
+                if (_namespaceList[ns]) {
+
+                    return _namespaceList[ns]
+                } else {
+
+                    return _namespaceList[ns] = {
+
+                        subscribe: (kind, cb) => {
+
+                            _subscribe(kind, cb);
+                        },
+                        unsubscribe: (kind, cb) => {
+
+                            _unsubscribe(kind, cb);
+                        },
+                        publish: (kind) => {
+
+                            _publish(kind);
+                        }, 
+                        one: () => {}, 
+                    }
+                }
+            }
+
+            return {
+                namespace: _namespace,
+                subscribe: (kind, cb) => {
+                    this.namespace().subscribe.apply(this, kind, cb);
+                },
+                unsubscribe: (kind, cb) => {
+                    this.namespace().unsubscribe.apply(this, kind, cb);
+                },
+                publish: (kind) => {
+                    this.namespace().publish.apply(this, kind);
+                }
+            };
+        })();
+
+        let num = 0;
+        let myMath = (function () {
+
+            let _add,
+                _reduce;
+
+            _add = (i) => ++i;
+            _reduce = (i) => --i;
+
+            return {
+                add: _add,
+                reduce: _reduce
+            }
+        })();
+
+
+
+        document.querySelector('.counter-add').addEventListener('click', () => {
+
+            MyEvent.publish('add');
+        });
+
+        document.querySelector('.counter-reduce').addEventListener('click', () => {
+
+            MyEvent.publish('reduce');
+        })
+
+        setTimeout(() => {
+
+            MyEvent.subscribe('add', () => {
+
+                num = myMath.add(num);
+                document.querySelector('.counter').innerText = num;
+            });
+
+            MyEvent.subscribe('reduce', () => {
+
+                num = myMath.reduce(num);
+                document.querySelector('.counter').innerText = num;
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
