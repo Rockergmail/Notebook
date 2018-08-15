@@ -14,6 +14,10 @@
     <span class="counter">0</span>
     <button class="counter-add">+</button>
 
+    <button class="counter2-reduce">-</button>
+    <span class="counter2">0</span>
+    <button class="counter2-add">+</button>
+
     <script>
         const MyEvent = (function () {
 
@@ -22,23 +26,23 @@
                 _unsubscribe, // 取消订阅
                 _namespaceList = {};
 
-            _subscribe = (kind, cb) => {
+            _subscribe = (kind, cb, list) => {
 
-                if (_subscriberList.hasOwnProperty(kind)) {
+                if (list.hasOwnProperty(kind)) {
 
-                    _subscriberList[kind].push(cb);
+                    list[kind].push(cb);
                     // 如何知道cb的参数？
                 } else {
 
-                    _subscriberList[kind] = [cb];
+                    list[kind] = [cb];
                 }
             };
 
-            _unsubscribe = (kind, cb) => {
+            _unsubscribe = (kind, cb, list) => {
 
-                if (_subscriberList.hasOwnProperty(kind) && _subscriberList[kind].indexOf(cb) > -1) {
+                if (list.hasOwnProperty(kind) && list[kind].indexOf(cb) > -1) {
 
-                    _subscriberList[kind].splice(_subscriberList[kind].indexOf(cb), 1);
+                    list[kind].splice(list[kind].indexOf(cb), 1);
                     console.log('取消订阅成功');
                 } else {
 
@@ -46,11 +50,11 @@
                 }
             };
 
-            _publish = (kind) => {
+            _publish = (kind, list) => {
 
-                if (_subscriberList.hasOwnProperty(kind)) {
+                if (list.hasOwnProperty(kind)) {
 
-                    _subscriberList[kind].forEach(cb => {
+                    list[kind].forEach(cb => {
 
                         cb();
                     });
@@ -65,6 +69,9 @@
                 // FIXME: 这里的ns变量是
                 ns = ns ? ns : 'default';
 
+                let _subscriberList = {},
+                    _offlineMsg = {};
+
                 if (_namespaceList[ns]) {
 
                     return _namespaceList[ns]
@@ -74,17 +81,34 @@
 
                         subscribe: (kind, cb) => {
 
-                            _subscribe(kind, cb);
+                            _subscribe(kind, cb, _subscriberList);
+
+                            if (_offlineMsg[kind]) {
+
+                                for (let i = 0; i < _offlineMsg[kind]; i++) {
+
+                                    cb();
+                                }
+                            }
                         },
                         unsubscribe: (kind, cb) => {
 
-                            _unsubscribe(kind, cb);
+                            _unsubscribe(kind, cb, _subscriberList);
                         },
                         publish: (kind) => {
 
-                            _publish(kind);
-                        }, 
-                        one: () => {}, 
+                            _publish(kind, _subscriberList);
+
+                            if (_offlineMsg[kind]) {
+
+                                _offlineMsg[kind] = _offlineMsg[kind] + 1;
+                            } else {
+
+                                _offlineMsg[kind] = 1
+                            }
+
+                        },
+                        one: () => { },
                     }
                 }
             }
@@ -92,18 +116,19 @@
             return {
                 namespace: _namespace,
                 subscribe: (kind, cb) => {
-                    this.namespace().subscribe.apply(this, kind, cb);
+                    _namespace().subscribe(kind, cb);
                 },
                 unsubscribe: (kind, cb) => {
-                    this.namespace().unsubscribe.apply(this, kind, cb);
+                    _namespace().unsubscribe(kind, cb);
                 },
                 publish: (kind) => {
-                    this.namespace().publish.apply(this, kind);
+                    _namespace().publish(kind);
                 }
             };
         })();
 
         let num = 0;
+        let num2 = 10;
         let myMath = (function () {
 
             let _add,
@@ -118,18 +143,6 @@
             }
         })();
 
-
-
-        document.querySelector('.counter-add').addEventListener('click', () => {
-
-            MyEvent.publish('add');
-        });
-
-        document.querySelector('.counter-reduce').addEventListener('click', () => {
-
-            MyEvent.publish('reduce');
-        })
-
         setTimeout(() => {
 
             MyEvent.subscribe('add', () => {
@@ -143,7 +156,40 @@
                 num = myMath.reduce(num);
                 document.querySelector('.counter').innerText = num;
             });
+
+            MyEvent.subscribe('add', () => {
+
+                num2 = myMath.add(num2);
+                document.querySelector('.counter2').innerText = num2;
+            });
+
+            MyEvent.subscribe('reduce', () => {
+
+                num2 = myMath.reduce(num2);
+                document.querySelector('.counter2').innerText = num2;
+            });
         }, 5000);
+
+        document.querySelector('.counter-add').addEventListener('click', () => {
+
+            MyEvent.publish('add');
+        });
+
+        document.querySelector('.counter-reduce').addEventListener('click', () => {
+
+            MyEvent.publish('reduce');
+        })
+
+        document.querySelector('.counter2-add').addEventListener('click', () => {
+
+            MyEvent.publish('add');
+        });
+
+        document.querySelector('.counter2-reduce').addEventListener('click', () => {
+
+            MyEvent.publish('reduce');
+        })
     </script>
 </body>
+
 </html>
