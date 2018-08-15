@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>H5 History Api</title>
+    <style>
+        .wrap{
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .ball{
+            width: 100px;
+            height: 100px;
+            background: grey;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .red.active{
+            background: red;
+        }
+
+        .yellow.active{
+            background: yellow;
+        }
+
+        .pink.active{
+            background: pink;
+        }
+
+        .blue.active{
+            background: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a class="ball" data-color="/red"></a>
+        <a class="ball" data-color="/yellow"></a>
+        <a class="ball" data-color="/blue"></a>
+        <a class="ball" data-color="/pink"></a>
+    </div>
+    <script>
+        
+        document.querySelector('.wrap').addEventListener('click', function(e){
+            e.preventDefault();
+            
+            var color = e.target.dataset.color;
+            console.log('push', color);
+
+            history.pushState(color, null, color);
+        })
+
+
+        window.addEventListener('popstate', function(e) {
+
+            // console.log(e);
+            console.log('pop', history.state);
+        })
+    </script>
+</body>
+</html>
