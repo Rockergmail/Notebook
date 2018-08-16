@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>H5 History Api</title>
+    <style>
+        .wrap,
+        .wrap2 {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .ball,
+        .ball2 {
+            width: 100px;
+            height: 100px;
+            background: grey;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .red.active {
+            background: red;
+        }
+
+        .yellow.active {
+            background: yellow;
+        }
+
+        .pink.active {
+            background: pink;
+        }
+
+        .blue.active {
+            background: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <a class="ball red" data-color="red"></a>
+        <a class="ball yellow" data-color="yellow"></a>
+        <a class="ball pink" data-color="pink"></a>
+        <a class="ball blue" data-color="blue"></a>
+    </div>
+    <div class="wrap2">
+        <a class="ball2 red" href="#red"></a>
+        <a class="ball2 yellow" href="#yellow"></a>
+        <a class="ball2 pink" href="#pink"></a>
+        <a class="ball2 blue" href="#blue"></a>
+    </div>
+    <script>
+        document.body.querySelector('.wrap').addEventListener('click', function (e) {
+
+            if (e.target === this) return false;
+
+            e.preventDefault();
+
+            var color = e.target.dataset.color;
+            console.log('push', color);
+
+            history.pushState(color, null, '/' + color + '.html');
+            activateCls(color);
+        })
+
+
+        window.addEventListener('popstate', function (e) {
+
+            console.log('pop', history.state);
+            activateCls(history.state);
+        })
+
+        function activateCls(cls) {
+
+            let curEle = null;
+
+            document.querySelectorAll('.ball').forEach(ele => {
+
+                if (ele.dataset.color === cls) curEle = ele;
+                ele.className = ele.className.replace(' active', '');
+            });
+
+            if (cls) curEle.className = curEle.className + ' active';
+        }
+
+        function activateCls2(cls) {
+
+            let curEle = null;
+
+            document.querySelectorAll('.ball2').forEach(ele => {
+
+                if (ele.className.indexOf(cls) > -1) curEle = ele;
+                ele.className = ele.className.replace(' active', '');
+            });
+
+            if (cls) curEle.className = curEle.className + ' active';
+        }
+
+        window.onload = function (e) {
+            console.log('onload');
+        }
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+            console.log('ready', history.state, location.hash);
+            activateCls2(location.hash.replace('#', ''));
+        });
+
+        window.onhashchange = function (e) {
+            console.log('onhashchange', location.hash);
+            let cls = location.hash.replace('#', '');
+            activateCls2(cls);
+        }
+    </script>
+</body>
+
+</html>
