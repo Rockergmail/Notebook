@@ -66,6 +66,8 @@
             console.log('push', color);
 
             history.pushState(color, null, '/index/' + color);
+            // hash可以触发popstate，popstate加hash不会触发onhashchang
+            // history.pushState(color, null, '/index#' + color); 
             activateCls(color);
         })
 
@@ -108,6 +110,7 @@
 
         document.addEventListener("DOMContentLoaded", function (event) {
             console.log('ready', history.state, location.hash);
+            activateCls(history.state);
             activateCls2(location.hash.replace('#', ''));
         });
 
