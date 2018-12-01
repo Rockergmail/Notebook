@@ -37,3 +37,27 @@ npm bin 查看当前的npm目录
 如果是私用的：
 ```{ "license": "UNLICENSED" }```
 ``````
+
+npm版本特性
+
+目录架构
+
+package-lock.json
+package.json
+
+版本的表示
+
+
+安装
+升级
+缓存
+
+dependance
+devDependance
+bandledDependance
+peerDependance
+
+
+命令，简写，常用的
+
+
