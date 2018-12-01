@@ -42,41 +42,41 @@ class AbstractFactory {
      * 示例方法，创建抽象产品A的对象
      * @return {[type]} 抽象产品A的对象
      */
-    createProductA () {}
+    createProductA() { }
     // 创建抽象产品B
-    createProductB () {}
+    createProductB() { }
 }
 
 /**
  * 抽象产品A,B的接口
  */
-class AbstractProductA {};
+class AbstractProductA { };
 // ...
-class AbstractProductB {};
+class AbstractProductB { };
 // ...
 
 // 产品A的实现
-var ProductA1 = function () {};
+var ProductA1 = function () { };
 ProductA1.prototype = Object.create(AbstractProductA.prototype);
-// ...
+// ... 
 
-var ProductA2 = function () {};
+var ProductA2 = function () { };
 ProductA2.prototype = Object.create(AbstractProductA.prototype);
 // ...
 
 // 产品B的实现
-var ProductB1 = function () {};
+var ProductB1 = function () { };
 ProductB1.prototype = Object.create(AbstractProductB.prototype);
 // ...
 
-var ProductB2 =     function () {};
+var ProductB2 = function () { };
 ProductB2.prototype = Object.create(AbstractProductB.prototype);
 // ...
 
 /**
  * 具体的工厂实现对象，实现创建具体的产品对象的操作
  */
-var ConcretFactory1 = function () {};
+var ConcretFactory1 = function () { };
 ConcretFactory1.prototype = Object.create(AbstractFactory.prototype);
 ConcretFactory1.prototype.createProductA = function () {
     return new ProductA1();
@@ -85,7 +85,7 @@ ConcretFactory1.prototype.createProductB = function () {
     return new ProductB1();
 };
 
-var ConcretFactory2 = function () {};
+var ConcretFactory2 = function () { };
 ConcretFactory2.prototype = Object.create(AbstractFactory.prototype);
 ConcretFactory2.prototype.createProductA = function () {
     return new ProductA2();
@@ -108,7 +108,7 @@ var MSIMainboard = function (id) {
     this.id = id;
 };
 
-var Schema1 = function () {};
+var Schema1 = function () { };
 Schema1.prototype = {
     createCPUApi: function () {
         return new AMDCPU(939);
@@ -118,7 +118,7 @@ Schema1.prototype = {
     }
 };
 
-var Schema2 = function () {};
+var Schema2 = function () { };
 Schema2 = {
     createCPUApi: function () {
         return new AMDCPU(1000);
