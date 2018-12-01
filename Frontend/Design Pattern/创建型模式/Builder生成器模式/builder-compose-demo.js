@@ -1,3 +1,5 @@
+// FIXME: 看完 组合模式 之后再来看看
+
 class Shop {
     construct(builder) {
         builder.step1();
