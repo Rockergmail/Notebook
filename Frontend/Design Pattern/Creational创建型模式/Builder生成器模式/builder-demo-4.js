@@ -1,17 +1,9 @@
 'use strict';
 
-
-
-/**
- * 为什么要有这个director？我认为不同组合builder的抽象；方便使用者使用。
- * 
- * 我对构建者模式的理解：
- * 构建对象时，传参的集合 ~> 不同的对象或者属性
- */
-
 class Director {
     constructor() {
         this.structure = ['Maze','Wall','Door'];
+        console.log("Director class created");
     }
 
     Construct (){
@@ -34,20 +26,24 @@ class Builder {
 class ConcreteBuilder extends Builder {
     constructor() {
         super()
+        console.log("ConcreteBuilder class created");
     }
 
     BuildPart (rawmaterial){
+        console.log("ConcreteBuilder BuildPart()");
         var material = rawmaterial
         this.product = new Product(material)
     }
 
     GetResult (){
+        console.log(JSON.stringify(this.product))
         return this.product
     }
 }
 
 class Product {
     constructor(material) {
+        console.log("Product class created");
         this.data = material
     }
 }
@@ -56,3 +52,5 @@ function init_Builder() {
     let director = new Director()
     director.Construct()
 }
+
+init_Builder();
