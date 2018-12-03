@@ -4,6 +4,7 @@ let _singleton = null
 
 class Singleton {
     constructor (data) {
+        // key logic !!!
         if(!_singleton) {
             this.data = data
             _singleton = this
