@@ -6,6 +6,7 @@ class Target {
 
         switch(type) {
             case 'adapter':
+                // 其实可以把这个分出去
                 result = new Adapter()
                 break
             default:

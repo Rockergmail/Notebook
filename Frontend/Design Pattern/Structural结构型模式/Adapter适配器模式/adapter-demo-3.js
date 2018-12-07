@@ -1,9 +1,9 @@
-// FIXME: 这个例子，是旧兼容新。。有点奇怪。。。
-// FIXME: 不能死拘泥于角色，而要看到真正的精髓。
-
+/**
+ * 特殊例子：旧接口兼容新接口 
+ */
 
 // old interface
-// Adaptor
+// Target
 class Shipping {
     request(zipStart, zipEnd, weight) {
         // ...
