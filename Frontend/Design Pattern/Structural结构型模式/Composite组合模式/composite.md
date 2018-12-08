@@ -6,3 +6,8 @@ The intent of a composite is to "compose" objects into tree structures to repres
 leaf as end.
 
 component composite
+
+树 递归 
+
+角色：
+component composite leaf 
