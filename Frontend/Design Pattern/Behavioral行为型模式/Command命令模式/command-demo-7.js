@@ -1,9 +1,6 @@
-// 实例： 菜单项
-// 菜单组合对象
-/*
- 接下来要实现的事Menubar，Menu和MenuItem类，作为一个整体，他们要能显示所有可用操作，并且根据要求调用这些操作，Menubar和Menu都是组合对象类，而MenuItem则是叶类。Menubar类保存着所有Menu实例：
- */
-// MenuBar class, a composite
+// 实例： 菜单项（组合模式 + 命令模式）
+
+// Composite
 class MenuBar {
   constructor() {
     this.menus = {};
@@ -31,7 +28,7 @@ class MenuBar {
   }
 }
 
-// Menu class, a composite
+// Composite
 class Menu {
   constructor(name) {
     this.name = name;
@@ -62,8 +59,7 @@ class Menu {
   }
 }
 
-// 调用者类
-// MenuItem class, a leaf
+// Leaf
 class MenuItem {
   constructor(name, command) {
     this.name = name;
@@ -73,6 +69,18 @@ class MenuItem {
     this.anchor.href = "#";
     this.element.appendChild(this.anchor);
     this.anchor.innerHTML = this.name;
+
+    // Invoker
+    addEvent(this.anchor, "click", function(e) {
+      e = e || window.event;
+      if (typeof e.preventDefault === "function") {
+        e.preventDefault();
+      } else {
+        e.returnValue = false;
+      }
+      command.execute();
+    });
+
   }
   add() {}
   remove() {}
@@ -83,19 +91,9 @@ class MenuItem {
   show() {
     this.element.style.display = "";
   }
-  //   addEvent(this.anchor, "click", function(e) {
-  //     e = e || window.event;
-  //     if (typeof e.preventDefault === "function") {
-  //       e.preventDefault();
-  //     } else {
-  //       e.returnValue = false;
-  //     }
-  //     command.execute();
-  //   });
 }
 
-// 命令类
-// MenuCommand class, a command object
+// Command
 class MenuCommand {
   constructor(action) {
     this.action = action;
@@ -105,7 +103,7 @@ class MenuCommand {
   }
 }
 
-// Receiver objects, instantiated from existing classes
+// Receiver
 class Test1 {
   constructor() {
     console.log("test1");
@@ -126,6 +124,9 @@ class Test3 {
   constructor() {
     console.log("test3");
   }
+  action() {
+    console.log("this is test3 fn1");
+  }
 }
 
 // Create the receiver
@@ -133,22 +134,23 @@ const test1 = new Test1();
 const test2 = new Test2();
 const test3 = new Test3();
 
-// Create the menu bar
+// Composite_MB
 const appMenuBar = new MenuBar();
-
-// The File menu
+// Composite_M
 const fileMenu = new Menu("File");
-
+// Command
 const test1Command1 = new MenuCommand(test1);
-
+// Composite_M Add Leaf
 fileMenu.add(new MenuItem("test1-1", test1Command1));
-
+// Composite_MB add Composite_M
 appMenuBar.add(fileMenu);
-
-var insertMenu = new Menu("Insert");
-var test2Command2 = new MenuCommand(test2);
+// Composite_M
+const insertMenu = new Menu("Insert");
+// Command
+const test2Command2 = new MenuCommand(test2);
+// Composite_M Add Leaf
 insertMenu.add(new MenuItem("test2-1", test2Command2));
-
+// Composite_MB Add Composite_M
 appMenuBar.add(insertMenu);
 
 document.body.appendChild(appMenuBar.getElement());

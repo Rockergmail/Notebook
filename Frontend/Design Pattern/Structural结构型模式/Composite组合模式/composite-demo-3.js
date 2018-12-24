@@ -45,7 +45,7 @@ class Composite extends Component {
 }
 
 
-// 叶子对象，也子对象不再包含其他子对象
+// 叶子对象，不再包含其他子对象
 class Leaf extends Component{
     someOperation () { };
 }
