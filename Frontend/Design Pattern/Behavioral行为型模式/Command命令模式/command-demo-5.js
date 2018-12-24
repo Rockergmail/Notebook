@@ -1,5 +1,5 @@
-
 // http://www.joezimjs.com/javascript/javascript-design-patterns-command/
+
 // Command
 class EnableAlarm {
     constructor(alarm) {
