@@ -1,5 +1,10 @@
 // 实例： 菜单项（组合模式 + 命令模式）
 
+/**
+ * Composite 实现实体之间（MenuBar、Menu、MenuItem）的关系
+ * Command 实现实体之间的（Receviers、Leaf）沟通行为
+ */
+
 // Composite
 class MenuBar {
   constructor() {
@@ -129,7 +134,7 @@ class Test3 {
   }
 }
 
-// Create the receiver
+// Create the receivers
 const test1 = new Test1();
 const test2 = new Test2();
 const test3 = new Test3();
@@ -155,3 +160,4 @@ appMenuBar.add(insertMenu);
 
 document.body.appendChild(appMenuBar.getElement());
 appMenuBar.show();
+
