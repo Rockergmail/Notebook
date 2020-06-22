@@ -1,3 +1,10 @@
+<!--
+ * @description: 
+ * @author: xiangrong.liu
+ * @Date: 2020-06-22 09:11:40
+ * @LastEditors: xiangrong.liu
+ * @LastEditTime: 2020-06-22 09:15:56
+--> 
 # XSRF (cross site request forgery)
 
 ### 原理
@@ -18,6 +25,7 @@
 1. SOP、CORS
 2. HTTP cookie
 3. XSS
+4. CSP
 
 ### Refernce
 1. https://www.youtube.com/watch?v=hW2ONyxAySY
