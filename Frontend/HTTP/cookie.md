@@ -1,3 +1,10 @@
+<!--
+ * @description: 
+ * @author: xiangrong.liu
+ * @Date: 2020-06-22 09:11:40
+ * @LastEditors: xiangrong.liu
+ * @LastEditTime: 2020-06-28 16:50:41
+--> 
 ### Samesite
 
 1. 同站（samesite），是指顶级域名+二级域名相同，例如baidu.com，只要这两个相同就是samesite
@@ -5,7 +12,7 @@
 3. 同站跟同源/同域不是同一个概念，同源的限制比较大，需要协议、主机号、端口都一样
 ![](images/cookie_samesite_001.png)
 4. ```samesite=strict```，同站的cookie才会发过去
-5. ```samesite=lex```，除了```a```、```link[ref=prerender]```、```form的get方法```可以带第三方cookie，其他只能带第一方cookie
+5. ```samesite=lax```，除了```a```、```link[ref=prerender]```、```form的get方法```可以带第三方cookie，其他只能带第一方cookie
 6. ```samesite=none```既可以带第一方cookie，又可以带第三方cookie。但需要注意：
    1. 结合cookie的secure属性使用，只能在https下启用
    2. ios12的safari、旧版本的Chrome，会把```samesite=none```当成```samesite=strict```，所以后端在setCookie之前要判断UA（[UA列表](https://www.chromium.org/updates/same-site/incompatible-clients)）
