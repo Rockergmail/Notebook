@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-07-16 15:39:25
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-07-16 17:46:42
+ * @LastEditTime: 2020-07-23 10:09:53
 --> 
 http明文传送，不安全。
 https，确保http传送：身份认证、数据安全性、数据一致性
@@ -25,9 +25,9 @@ tls握手过程：
 - 在第4步和第5步用到生成的散列值，用到了```SHA256```的消息认证算算法
 
 tcp三次握手
-[](./images/tcp_3.png)
+![](./images/tcp_3.png)
 tcp四次挥手
-[](./images/tcp_4.png)
+![](./images/tcp_4.png)
 
 ### Reference
 1. https://hit-alibaba.github.io/interview/basic/network/HTTPS.html
