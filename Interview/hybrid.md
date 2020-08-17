@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-06-17 14:44:42
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-08-17 16:55:10
+ * @LastEditTime: 2020-08-17 18:03:48
 --> 
 1. CORS、preflight、CORS配置一级域名
 2. new怎么实现
@@ -17,7 +17,7 @@
 10. 浏览器是做什么的
 11. 面比较窄，他连vue都没问
 12. webpack
-13. 优化
+13. 优化: https://segmentfault.com/a/1190000020690092
 14. 登录
 15. cookie session
 
