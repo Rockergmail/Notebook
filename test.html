@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input id="fuck"/>
+    <!-- <script type="module" src='./Interview/debounce.js'></script> -->
+    <script type="module">
+        import debounce from './Interview/debounce.js'
+        function shit () {
+            console.log('shit')
+        }
+        let inputEl = document.querySelector('#fuck')
+        inputEl.addEventListener('keydown', debounce(shit, 1000));
+    </script>
+</body>
+</html>

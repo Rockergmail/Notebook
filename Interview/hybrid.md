@@ -15,6 +15,5 @@
 8. treeshaking怎么做
 9. event loop
 10. 浏览器是做什么的
-11. 面比较窄，他连vue都没问
 
 https://github.com/mqyqingfeng/Blog/issues/13
