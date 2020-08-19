@@ -230,9 +230,54 @@
 
   // create a fake namespace object
   // mode & 1: value is a module id, require it
-  // mode & 2: merge all properties of value into the ns
+  // mode & 2: merge all properties of value into the ns，如果不是es6module、也不是commonjsmodule，那就把它变成es6module
   // mode & 4: return value when already ns object
   // mode & 8|1: behave like require
+  /* 二进制
+      0b0001 ---> 1
+      0b0010 ---> 2
+      0b0100 ---> 4
+      0b1000 ---> 8
+
+      &与操作
+         1001
+      &  0001
+      ---------
+         0001 
+
+      此处以0001为准，就看如果传过来的值最后一位是1，那就是true，否则就是false
+      
+      再举个例子
+
+         1101
+      &  0100
+      ---------
+         0100 
+
+      此处以0100为准，就看如果传过来的值倒数第三位是1，那就是true，否则就是false
+
+      所以效果就是mode传过来的二进制，1001，就相当于走1、8的逻辑
+      所以效果就是mode传过来的二进制，0011，就相当于走1、2的逻辑
+
+      let modules = {
+        "moduleA": function(module, exports) {
+          module.exports = "moduleA导出内容"
+        },
+        "moduleB": function(module, exports) {
+          module.exports = { 
+            __esModule: true,
+            default: 'moduleB导出内容'
+          }
+        },
+        "moduleC": function(module, exports) {
+          module.exports = { name: 'moduleC导出内容'}
+        }
+      }
+      
+      __webpack_require__.t("moduleA", 0b1001) // 直接返回
+      __webpack_require__.t("moduleB", 0b0101) // 返回es6模块
+      __webpack_require__.t("moduleA", 0b1001) // 强制转换成es6再返回
+  */
   __webpack_require__.t = function (value, mode) {
     if (mode & 1) value = __webpack_require__(value);
     if (mode & 8) return value;
@@ -243,7 +288,7 @@
     if (mode & 2 && typeof value != 'string') for (var key in value) __webpack_require__.d(ns, key, function (key) { return value[key]; }.bind(null, key));
     return ns;
   };
-
+ 
   // getDefaultExport function for compatibility with non-harmony modules
   __webpack_require__.n = function (module) {
     var getter = module && module.__esModule ?

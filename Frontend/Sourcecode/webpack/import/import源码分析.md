@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-08-18 14:26:17
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-08-18 14:50:40
+ * @LastEditTime: 2020-08-18 19:17:57
 -->
 <!-- https://juejin.im/post/6859569958742196237#heading-10 -->
 
@@ -22,3 +22,7 @@ import moduleName from 'xxModule'和import('xxModule')经过webpack编译打包�
 - import('xxModule')，编译成一个chunk，独立生成一个文件
 - 在浏览器运行的时候，会先看看入口的module（./src/index.js）是否在缓存，有的话直接使用，没有的话通过__webpack_require__来引用它。引用其他模块，也是通过__webpack_require__来引用
 - 如果引用到了chunk，会先查这个chunk是否在缓存内，没有的话新建一个script加载这个chunk，chunk执行的时候，会注册到缓存，然后把里面的模块注册到modules，然后引用
+
+ __webpack_require__.d(getter, 'a', getter); 未知道什么意思
+
+ .t，其实
