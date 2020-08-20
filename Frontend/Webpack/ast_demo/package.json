@@ -1,0 +1,20 @@
+{
+  "name": "ast_demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "babel_demo.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "babel-traverse": "^6.26.0",
+    "babel-types": "^6.26.0",
+    "escodegen": "^2.0.0",
+    "esprima": "^4.0.1",
+    "estraverse": "^5.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
