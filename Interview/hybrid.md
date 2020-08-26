@@ -32,3 +32,8 @@ https://github.com/mqyqingfeng/Blog/issues/13
 为什么觉得学不稳，是不能理解，还是没有记好？
 
 
+
+1. 选一个你觉得自己做得最满意的项目，说一下
+2. 如何技术选型，uniapp、变色龙、taro的技术选型
+3. 如何优化小程序的首页加载
+4. electron
