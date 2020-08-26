@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-06-17 14:44:42
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-08-26 16:29:59
+ * @LastEditTime: 2020-08-26 18:15:56
 --> 
 1. CORS、preflight、CORS配置一级域名
 2. new怎么实现
@@ -30,3 +30,5 @@ https://github.com/mqyqingfeng/Blog/issues/13
 
 
 为什么觉得学不稳，是不能理解，还是没有记好？
+
+
