@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-06-17 14:44:42
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-08-17 18:03:48
+ * @LastEditTime: 2020-08-26 16:29:59
 --> 
 1. CORS、preflight、CORS配置一级域名
 2. new怎么实现
@@ -13,7 +13,9 @@
 6. 遍历算法
 7. 优化如何回答
 8. treeshaking怎么做
-9. event loop
+   1. 基于es6模块的静态检查
+   2. 配置好sideEffects、puer。sideEffects，如果是class，非loose按照，它的那个createClass方法是改变了可枚举属性的，还有如果入参是引用类型，也会有副作用，因为有可能被修改。
+9.  event loop
 10. 浏览器是做什么的
 11. 面比较窄，他连vue都没问
 12. webpack
@@ -22,3 +24,9 @@
 15. cookie session
 
 https://github.com/mqyqingfeng/Blog/issues/13
+
+复习
+学习
+
+
+为什么觉得学不稳，是不能理解，还是没有记好？
