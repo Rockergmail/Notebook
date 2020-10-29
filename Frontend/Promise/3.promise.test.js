@@ -3,11 +3,12 @@
  * @author: xiangrong.liu
  * @Date: 2020-10-29 09:45:52
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-10-29 17:42:30
+ * @LastEditTime: 2020-10-29 17:55:00
  */
 /**
  * 1. then方法（成功/失败）如果返回是一个Promise，那么这个promise会自动执行，并把状态带过去；如果返回的是一个非Promise值，那么也会返回一个新的promise，但是会把这个值带过去；如果不想再然后面的then执行，可以返回一个空的Promiser让它保持Pending：return new Promise(() => {})
  * 2. onrejected是可选的
+ * 3. 提供defer以防嵌套
  */
 
 const Promise = require('./3.promise.js');
