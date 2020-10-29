@@ -3,7 +3,7 @@
 * 2. 成功执行resolve，失败执行reject，其中执行resolve了就不会执行reject，执行了reject就不执行resolve。
  * 3. 先执行执行器，如跑出错误，也会执行reject
  * 4. throw new Error 的效果有二，不执行后面的同步操作，执行reject操作。如果先执行了reject就执行reject，tne的作用就只有不执行同步，且不会再次执行reject。如果先执行resolve就执行resolve，tne的作用就只有不执行同步，且不会再次执行reject
- * 5. 有then方法，第一个参数是fullfilled的回调，第二个参数是rejected的回调
+ * 5. 有then方法，第一个参数是fullfilled的回调，第二个参数是rejected的回调。支持发布订阅（其实在这里我的理解是多次调用then方法而已）
  */
 
 const Promise = require('./1.promise.js');
@@ -69,23 +69,46 @@ const Promise = require('./1.promise.js');
 失败 error
  */
 
-let promise4 = new Promise((resolve, reject) => {
-    console.log('第一句');
-    resolve('success');
-    console.log('第二句')
-    throw new Error('自定义错误');
-    reject('error');
-    console.log('第三句')
-})
+// let promise4 = new Promise((resolve, reject) => {
+//     console.log('第一句');
+//     resolve('success');
+//     console.log('第二句')
+//     throw new Error('自定义错误');
+//     reject('error');
+//     console.log('第三句')
+// })
 
-promise4.then((data) => {
-    console.log('成功', data)
-}, (err) => {
-    console.error('失败', err)
-})
+// promise4.then((data) => {
+//     console.log('成功', data)
+// }, (err) => {
+//     console.error('失败', err)
+// })
 
 /**
 第一句
 第二句
 成功 success
  */
+
+let promise5 = new Promise((resolve, reject) => {
+    // resolve();
+    reject();
+})
+
+promise5.then(() => {
+    console.log('then1')
+}, () => {
+    console.log('catch1')
+})
+
+promise5.then(() => {
+    console.log('then2')
+}, () => {
+    console.log('catch2')
+})
+
+promise5.then(() => {
+    console.log('then3')
+}, () => {
+    console.log('catch3')
+})
