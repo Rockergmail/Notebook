@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-10-29 10:11:35
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-10-29 17:41:48
+ * @LastEditTime: 2020-10-30 14:48:31
  */
 const PENDING = 'PENDING';
 const FULLFILLED = 'FULLFILLED';
@@ -28,7 +28,7 @@ function resolvePromise (_promise, x, resolve, reject) {
                         called = true;
                         resolvePromise(_promise, y, resolve, reject)
                         // resolve(y)
-                    }, 
+                    },
                     r => {
                         if (called) return;
                         called = true;
@@ -38,14 +38,14 @@ function resolvePromise (_promise, x, resolve, reject) {
             } else {
                 resolve(x)
             }
-        } catch(e) {
+        } catch (e) {
             if (called) return;
             called = true;
             reject(e)
         }
     } else {
         resolve(x)
-    } 
+    }
 }
 
 class Promise {
@@ -118,6 +118,11 @@ class Promise {
         })
         return _promise
     }
+
+    finally(onFinally) {
+        return this.then(onFinally, onFinally)
+    }
+
 }
 
 // 可以解决少嵌套问题
@@ -129,5 +134,47 @@ Promise.defer = Promise.deferred = function () {
     })
     return dfd
 }
+
+function isPromise (data) {
+    if (typeof data === 'object' && data !== null || typeof data === 'function') {
+        if (typeof data.then === 'function') {
+            return true
+        }
+    }
+    return false;
+}
+
+Promise.all = function (values) {
+    return new Promise((resolve, reject) => {
+
+        let result = [];
+        let index = 0
+        function processData (k, v) {
+            result[k] = v;
+            if (++index === values.length) {
+                resolve(result)
+            }
+        }
+
+        for (let i = 0; i < values.length; i++) {
+            let current = values[i]
+            if (isPromise(current)) {
+                current.then(data => {
+                    processData(i, data)
+                }, err => {
+                    reject(err)
+                })
+            } else {
+                processData(i, current)
+                // result[i] = current
+            }
+        }
+    })
+}
+
+
+
+Promise.any = function () {}
+Promise.any = function () {}
 
 module.exports = Promise;
