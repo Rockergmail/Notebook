@@ -72,6 +72,7 @@ function Promise(fn) {
   /**
    * 执行用户传进来的fn
    */
+  debugger;
   doResolve(fn, this);
 }
 Promise._onHandle = null;
@@ -92,6 +93,7 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
   /**
    * 注意这里传入的handle的deferred的promise是对应res。this是指向用户新建的promise实例
    */
+  debugger;
   handle(this, new Handler(onFulfilled, onRejected, res));
   return res;
 };
@@ -111,6 +113,8 @@ function safeThen(self, onFulfilled, onRejected) {
  */
 function handle(self, deferred) {
   
+  debugger;
+
   while (self._state === 3) {
     self = self._value;
   }
@@ -133,6 +137,9 @@ function handle(self, deferred) {
        * 把then自己新建的promise实例存到_deferreds
        */
       self._deferreds = deferred;
+
+      debugger;
+
       return;
     }
     if (self._deferredState === 1) {
@@ -141,11 +148,16 @@ function handle(self, deferred) {
        * 如果then方法新建的promise，
        */
       self._deferreds = [self._deferreds, deferred];
+
+      debugger;
       return;
     }
     self._deferreds.push(deferred);
+    debugger;
     return;
   }
+  // 注意，当state等于3，然后变成1之后，deffered还是同一个，从而获取对应的值
+  debugger;
   handleResolved(self, deferred);
 }
 /**
@@ -153,12 +165,14 @@ function handle(self, deferred) {
  * function resolve/reject then方法新建的promise实例
  */
 function handleResolved(self, deferred) {
+  debugger;
   /**
    * asap是异步队列处理库，暂时可以简单理解为setTimeout(fn, 0)来模拟异步处理
    * TODO:这里为什么要用asap？
    * https://github.com/kriskowal/asap/blob/master/raw.js
    */
   asap(function() {
+    debugger;
     var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
 
     if (cb === null) {
@@ -183,6 +197,7 @@ function handleResolved(self, deferred) {
  * 执行存起来的_deferreds的回调
  */
 function resolve(self, newValue) {
+  debugger;
   // 注意self是指向谁的，从fn的执行，到then的执行，所传的self是不一样的。前者传promise实例，后者传then方法自己新建的promise实例
   // newValue是resolve的值
   // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
@@ -207,7 +222,7 @@ function resolve(self, newValue) {
       then === self.then &&
       newValue instanceof Promise
     ) {
-      debugger
+      debugger;
       self._state = 3;
       self._value = newValue;
       finale(self);
@@ -218,6 +233,7 @@ function resolve(self, newValue) {
      * 专门用于Promise.resolve的，传入thenable，相当于自动执行then方法
      */
     } else if (typeof then === 'function') {
+      debugger;
       doResolve(then.bind(newValue), self);
       return;
     }
@@ -225,6 +241,7 @@ function resolve(self, newValue) {
   /**
    * 此处，已经包括了处理用户返回（{then: 1}）的特殊情况
    */
+  debugger;
   self._state = 1;
   self._value = newValue;
   finale(self);
@@ -253,11 +270,14 @@ function reject(self, newValue) {
  * 执行存起来的_deferreds的回调
  */
 function finale(self) {
+  debugger;
   if (self._deferredState === 1) {
+    debugger;
     handle(self, self._deferreds);
     self._deferreds = null;
   }
   if (self._deferredState === 2) {
+    debugger;
     for (var i = 0; i < self._deferreds.length; i++) {
       handle(self, self._deferreds[i]);
     }
