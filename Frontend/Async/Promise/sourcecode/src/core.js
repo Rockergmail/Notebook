@@ -99,6 +99,7 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
 };
 /**
  * 防止不是同一个constructor，所以用我们的constructor新建一个promise，然后执行constructor的代码
+ * 为了兼容其他库的promise实现
  */
 function safeThen(self, onFulfilled, onRejected) {
   return new self.constructor(function (resolve, reject) {
@@ -142,16 +143,17 @@ function handle(self, deferred) {
 
       return;
     }
+    // TODO: 什么时候会进来这里？什么用例
     if (self._deferredState === 1) {
       self._deferredState = 2;
       /**
        * 如果then方法新建的promise，
        */
       self._deferreds = [self._deferreds, deferred];
-
       debugger;
       return;
     }
+    // TODO: 什么时候会进来这里？什么用例
     self._deferreds.push(deferred);
     debugger;
     return;
