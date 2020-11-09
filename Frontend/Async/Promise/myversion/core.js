@@ -33,6 +33,7 @@ function Promise(fn) {
         if (done) {
             return
         } else {
+            done = true;
         this._status = 2;
         this._value = newVal;
         }
