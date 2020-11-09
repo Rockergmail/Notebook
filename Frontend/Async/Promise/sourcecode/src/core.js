@@ -194,7 +194,7 @@ function handleResolved(self, deferred) {
   });
 }
 /**
- * 根据值做不同的判断
+ * 根据值做不同的判断，注意self是指向谁
  * 改变state为1，fullfilled，记录返回值
  * 执行存起来的_deferreds的回调
  */

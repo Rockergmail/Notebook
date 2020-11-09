@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-10-30 21:34:41
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-11-02 19:39:46
+ * @LastEditTime: 2020-11-09 18:14:25
  */
 const Promise = require('../src/core');
 
@@ -87,4 +87,5 @@ function promiseTest5 () {
     })
 }
 
-promiseTest2()
+promiseTest1()
+// promiseTest2()

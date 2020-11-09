@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-10-29 09:45:23
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-11-05 10:54:06
+ * @LastEditTime: 2020-11-09 15:30:27
 -->
 
 
@@ -43,8 +43,9 @@ promise缺点：
 
 ### Reference
 1. promise的实施 https://www.promisejs.org/
-2. callback的缺点 https://github.com/hax/hax.github.com/issues/11
-3. release zalgo https://zhuanlan.zhihu.com/p/30630902 
+2. promise规范 https://promisesaplus.com/
+3. callback的缺点 https://github.com/hax/hax.github.com/issues/11
+4. release zalgo https://zhuanlan.zhihu.com/p/30630902 
 
 promise优点：
 1. 解决异步嵌套问题
@@ -120,3 +121,12 @@ console.log(it.next())
 3. 弄清楚组件之间的关系
 4. 架构的设计、功能设计、api设计、目录设计
 5. 存在的目的（why promise、why callback sucks）
+
+功能点：
+1. 流控制
+   1. 状态机+immutable+once
+   2. 回调必定是异步的
+   3. 支持chainable
+   4. 支持转化成promise
+   5. 支持错误处理
+2. api是标准的
