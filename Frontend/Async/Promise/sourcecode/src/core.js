@@ -92,9 +92,10 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
   var res = new Promise(noop);
   /**
    * 注意这里传入的handle的deferred的promise是对应res。this是指向用户新建的promise实例
+   * onFulfilled、onFulfilled是用户第一个then的回调
    */
   debugger;
-  handle(this, new Handler(onFulfilled, onRejected, res));
+  handle(this, new Handler(onFulfilled, onFulfilled, res));
   return res;
 };
 /**
