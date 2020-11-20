@@ -1,9 +1,11 @@
+const { _onHandle } = require("../sourcecode/src/core");
+
 /*
  * @description: 
  * @author: xiangrong.liu
  * @Date: 2020-11-12 19:10:00
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-11-20 11:01:54
+ * @LastEditTime: 2020-11-20 18:13:07
  */
 let LAST_ERROR = null;
 let IS_ERROR = {};
@@ -63,15 +65,15 @@ function Promise (fn) {
 }
 
 Promise.prototype.then = function (onFullfilled, onRejected) {
+    // LXRTODO: 这里的默认值应该这么设置么？
     onFullfilled = onFullfilled ? onFullfilled : (data) => data
     onRejected = onRejected ? onRejected : (e) => { throw e }
     let thenPromise = new Promise(noop);
-    this._defferreds.push({
+    handle(this, {
         thenPromise,
         onFullfilled,
         onRejected
     })
-    finale(this)
     return thenPromise;
 }
 
@@ -90,7 +92,7 @@ function resolve (self, newVal) {
         if (then === self.then && Object.prototype.toString.call(newVal) === '[object MyPromise]') {
             self._status = 3;
             self._value = newVal;
-            finale(self);
+            finale(self, self._defferreds[0]);
             return;
         } else if (Object.prototype.toString.call(newVal) === '[object Function]') {
             return;
@@ -99,68 +101,43 @@ function resolve (self, newVal) {
 
     self._status = 1;
     self._value = newVal;
-    finale(self);
+    handleResolved(self, self._defferreds[0] || {})
 }
 
 function reject (self, newVal) {
     self._status = 2;
     self._value = newVal;
-    finale(self);
+    finale(self, self._defferreds[0]);
 }
 
-function finale (self) {
-    // console.log('final', self._defferreds);
-    if (!self._defferreds.length) {
-        // if (!self._defferreds) {
-        return
+function handle (self, deffered) {
+    if (self._status === 0) {
+        self._defferreds.push(deffered)
+        return;
     }
-
-    // TODO: 应该是while，因为可能无限嵌套promise，先考虑一次
-    if (self._status === 3) {
-        self = self._value;
-    }
-
-    // TODO:为什么需要异步执行？
-    if (self._status === 1) {
-        let result = tryCallOne(self._defferreds[0].onFullfilled, self._value)
-        if (result === IS_ERROR) {
-            reject(self._defferreds[0].thenPromise, LAST_ERROR)
-        } else {
-            resolve(self._defferreds[0].thenPromise, result)
-        }
-    }
-    if (self._status === 2) {
-        let result = tryCallOne(self._defferreds[0].onRejected, self._value)
-        if (result === IS_ERROR) {
-            reject(self._defferreds[0].thenPromise, LAST_ERROR)
-        } else {
-            // 注意，这里需要resolve
-            resolve(self._defferreds[0].thenPromise, result)
-        }
-    }
-    // let onFullfilled = self._defferreds[0].onFullfilled ? self._defferreds[0].onFullfilled : null;
-    // let onRejected = self._defferreds[0].onRejected ? self._defferreds[0].onRejected : null;
-    // let cb = self._status === 1 ? onFullfilled : onRejected
-
-    // if (cb) {
-    //     let result = tryCallOne(cb, self._value)
-    //     if (result === IS_ERROR) {
-    //         reject(self._defferreds[0].thenPromise, LAST_ERROR)
-    //     } else {
-    //         resolve(self._defferreds[0].thenPromise, result)
-    //     }
-    // } else {
-
-    // }
-    // self._defferreds.forEach(defferred => {
-    //     // TODO: 这里的this应该传什么
-    //     handleResolved(self, defferred)
-    // });
+    handleResolved(self, deffered);
 }
 
-// function handleResolved(self, defferred) {
+function finale (self, deffered) {
+    
+}
 
-// }
+function handleResolved (self, defferred) {
+    // TODO: 为什么要异步操作？
+    setTimeout(() => {
+        let cb = self._status === 1 ? defferred.onFullfilled : defferred.onRejected
+        if (cb === null) {
+
+        } else {
+            let result = tryCallOne(cb, self._value)
+            if (result === IS_ERROR) {
+                reject(defferred.thenPromise, LAST_ERROR)
+            } else {
+                resolve(defferred.thenPromise, result)
+            }
+        }
+    }, 0)
+}
 
 var promise1 = new Promise((resolve, reject) => {
     // resolve(1000)
@@ -173,7 +150,7 @@ var promise1 = new Promise((resolve, reject) => {
     //     reject(2000)
     // }, 1000)
     // resolve(new Promise(() => {}))
-    resolve(new Promise((resolve2, reject2) => {resolve2(3000)}))
+    resolve(new Promise((resolve2, reject2) => { resolve2(3000) }))
     // resolve(new Promise((resolve2, reject2) => {resolve2(3000)}).then(_res => {console.log(_res)}));
 })
 
