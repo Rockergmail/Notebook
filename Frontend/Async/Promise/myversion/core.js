@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2020-11-12 19:10:00
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-11-19 16:03:08
+ * @LastEditTime: 2020-11-20 11:01:54
  */
 let LAST_ERROR = null;
 let IS_ERROR = {};
@@ -26,14 +26,14 @@ function tryCallOne (fn, a) {
     }
 }
 
-function getThen(obj) {
+function getThen (obj) {
     try {
         return obj.then
-    } catch(e) {
+    } catch (e) {
         LAST_ERROR = e
         return IS_ERROR
     }
-    
+
 }
 
 const noop = () => { }
@@ -81,19 +81,20 @@ function resolve (self, newVal) {
         return new TypeError('A promise cannot be resolved with itself.')
     }
 
-    let then = getThen(newVal);
-    if (then === IS_ERROR) {
-        reject(self, LAST_ERROR)
-        return;
-    }
-
-    if (then === self.then && Object.prototype.toString.call(newVal) === '[object MyPromise]') {
-        self._status = 3;
-        self._value = newVal;
-        finale(self);
-        return;
-    } else if (Object.prototype.toString.call(newVal) === '[object Function]') {
-        return;
+    if (Object.prototype.toString.call(newVal) === '[object MyPromise]' || Object.prototype.toString.call(newVal) === '[object Function]') {
+        let then = getThen(newVal);
+        if (then === IS_ERROR) {
+            reject(self, LAST_ERROR)
+            return;
+        }
+        if (then === self.then && Object.prototype.toString.call(newVal) === '[object MyPromise]') {
+            self._status = 3;
+            self._value = newVal;
+            finale(self);
+            return;
+        } else if (Object.prototype.toString.call(newVal) === '[object Function]') {
+            return;
+        }
     }
 
     self._status = 1;
@@ -110,6 +111,7 @@ function reject (self, newVal) {
 function finale (self) {
     // console.log('final', self._defferreds);
     if (!self._defferreds.length) {
+        // if (!self._defferreds) {
         return
     }
 
@@ -119,37 +121,37 @@ function finale (self) {
     }
 
     // TODO:为什么需要异步执行？
-    // if (self._status === 1) {
-    //     let result = tryCallOne(self._defferreds[0].onFullfilled, self._value)
-    //     if (result === IS_ERROR) {
-    //         reject(self._defferreds[0].thenPromise, LAST_ERROR)
-    //     } else {
-    //         resolve(self._defferreds[0].thenPromise, result)
-    //     }
-    // }
-    // if (self._status === 2) {
-    //     let result = tryCallOne(self._defferreds[0].onRejected, self._value)
-    //     if (result === IS_ERROR) {
-    //         reject(self._defferreds[0].thenPromise, LAST_ERROR)
-    //     } else {
-    //         // 注意，这里需要resolve
-    //         resolve(self._defferreds[0].thenPromise, result)
-    //     }
-    // }
-    let onFullfilled = self._defferreds[0].onFullfilled ? self._defferreds[0].onFullfilled : null;
-    let onRejected = self._defferreds[0].onRejected ? self._defferreds[0].onRejected : null;
-    let cb = self._status === 1 ? onFullfilled : onRejected
-
-    if (cb) {
-        let result = tryCallOne(cb, self._value)
+    if (self._status === 1) {
+        let result = tryCallOne(self._defferreds[0].onFullfilled, self._value)
         if (result === IS_ERROR) {
             reject(self._defferreds[0].thenPromise, LAST_ERROR)
         } else {
             resolve(self._defferreds[0].thenPromise, result)
         }
-    } else {
-        
     }
+    if (self._status === 2) {
+        let result = tryCallOne(self._defferreds[0].onRejected, self._value)
+        if (result === IS_ERROR) {
+            reject(self._defferreds[0].thenPromise, LAST_ERROR)
+        } else {
+            // 注意，这里需要resolve
+            resolve(self._defferreds[0].thenPromise, result)
+        }
+    }
+    // let onFullfilled = self._defferreds[0].onFullfilled ? self._defferreds[0].onFullfilled : null;
+    // let onRejected = self._defferreds[0].onRejected ? self._defferreds[0].onRejected : null;
+    // let cb = self._status === 1 ? onFullfilled : onRejected
+
+    // if (cb) {
+    //     let result = tryCallOne(cb, self._value)
+    //     if (result === IS_ERROR) {
+    //         reject(self._defferreds[0].thenPromise, LAST_ERROR)
+    //     } else {
+    //         resolve(self._defferreds[0].thenPromise, result)
+    //     }
+    // } else {
+
+    // }
     // self._defferreds.forEach(defferred => {
     //     // TODO: 这里的this应该传什么
     //     handleResolved(self, defferred)
@@ -183,7 +185,7 @@ var promise1 = new Promise((resolve, reject) => {
 
 promise1.then(res => {
     console.log('suc', res)
-    // return res;
+    return res;
 }, err => {
     console.log('err', err)
     throw new Error('custom error2')
@@ -193,5 +195,3 @@ promise1.then(res => {
 }, err => {
     console.log('err2', err)
 })
-
-console.log(Object.prototype.toString.call(promise1))
