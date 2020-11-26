@@ -262,7 +262,7 @@ function reject(self, newValue) {
   self._value = newValue;
   /*
    * 如果设置了全局的_onHandle钩子，会在这里触发
-   */
+   */ 
   if (Promise._onReject) {
     Promise._onReject(self, newValue);
   }

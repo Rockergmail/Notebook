@@ -5,7 +5,7 @@ const { _onHandle } = require("../sourcecode/src/core");
  * @author: xiangrong.liu
  * @Date: 2020-11-12 19:10:00
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-11-20 18:13:07
+ * @LastEditTime: 2020-11-26 17:49:40
  */
 let LAST_ERROR = null;
 let IS_ERROR = {};
@@ -65,6 +65,7 @@ function Promise (fn) {
 }
 
 Promise.prototype.then = function (onFullfilled, onRejected) {
+    debugger;
     // LXRTODO: 这里的默认值应该这么设置么？
     onFullfilled = onFullfilled ? onFullfilled : (data) => data
     onRejected = onRejected ? onRejected : (e) => { throw e }
@@ -92,25 +93,29 @@ function resolve (self, newVal) {
         if (then === self.then && Object.prototype.toString.call(newVal) === '[object MyPromise]') {
             self._status = 3;
             self._value = newVal;
-            finale(self, self._defferreds[0]);
+            // finale(self, self._defferreds[0]);
             return;
         } else if (Object.prototype.toString.call(newVal) === '[object Function]') {
+            // TODO: 处理thenable object
             return;
         }
     }
 
     self._status = 1;
     self._value = newVal;
-    handleResolved(self, self._defferreds[0] || {})
+    self._defferreds[0] && handleResolved(self, self._defferreds[0])
 }
 
 function reject (self, newVal) {
     self._status = 2;
     self._value = newVal;
-    finale(self, self._defferreds[0]);
+    self._defferreds[0] && handleResolved(self, self._defferreds[0])
 }
 
 function handle (self, deffered) {
+    while (self._status === 3) {
+        self = self._value
+    }
     if (self._status === 0) {
         self._defferreds.push(deffered)
         return;
@@ -119,7 +124,6 @@ function handle (self, deffered) {
 }
 
 function finale (self, deffered) {
-    
 }
 
 function handleResolved (self, defferred) {
@@ -127,7 +131,12 @@ function handleResolved (self, defferred) {
     setTimeout(() => {
         let cb = self._status === 1 ? defferred.onFullfilled : defferred.onRejected
         if (cb === null) {
-
+            console.log('这里应该是then返回的值如果是promise')
+            if (self._status === 1) {
+                resolve(defferred.thenPromise, self._value);
+            } else if (self._status === 2) {
+                reject(defferred.thenPromise, self._value);
+            }
         } else {
             let result = tryCallOne(cb, self._value)
             if (result === IS_ERROR) {
@@ -150,7 +159,10 @@ var promise1 = new Promise((resolve, reject) => {
     //     reject(2000)
     // }, 1000)
     // resolve(new Promise(() => {}))
-    resolve(new Promise((resolve2, reject2) => { resolve2(3000) }))
+    // resolve(new Promise((resolve2, reject2) => { resolve2(3000) }))
+    // resolve(new Promise((resolve2, reject2) => { reject2(4000) }))
+    resolve(new Promise((resolve2, reject2) => { setTimeout(() => {resolve2(3000)}, 1000)}))
+    // resolve(new Promise((resolve2, reject2) => { setTimeout(() => {reject2(4000)}, 1000)}))
     // resolve(new Promise((resolve2, reject2) => {resolve2(3000)}).then(_res => {console.log(_res)}));
 })
 
