@@ -160,7 +160,7 @@ function handle(self, deferred) {
     return;
   }
   // 注意，当state等于3，然后变成1之后，deffered还是同一个，从而获取对应的值
-  // debugger;
+  // debugger;0
   handleResolved(self, deferred);
 }
 /**

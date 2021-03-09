@@ -5,7 +5,7 @@ const { _onHandle } = require("../sourcecode/src/core");
  * @author: xiangrong.liu
  * @Date: 2020-11-12 19:10:00
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2020-11-26 17:49:40
+ * @LastEditTime: 2020-11-27 15:54:10
  */
 let LAST_ERROR = null;
 let IS_ERROR = {};
@@ -149,7 +149,7 @@ function handleResolved (self, defferred) {
 }
 
 var promise1 = new Promise((resolve, reject) => {
-    // resolve(1000)
+    resolve(1000) 
     // reject(2000)
     // throw new Error('custom error')
     // setTimeout(() => {
@@ -161,20 +161,17 @@ var promise1 = new Promise((resolve, reject) => {
     // resolve(new Promise(() => {}))
     // resolve(new Promise((resolve2, reject2) => { resolve2(3000) }))
     // resolve(new Promise((resolve2, reject2) => { reject2(4000) }))
-    resolve(new Promise((resolve2, reject2) => { setTimeout(() => {resolve2(3000)}, 1000)}))
+    // resolve(new Promise((resolve2, reject2) => { setTimeout(() => {resolve2(3000)}, 1000)}))
     // resolve(new Promise((resolve2, reject2) => { setTimeout(() => {reject2(4000)}, 1000)}))
     // resolve(new Promise((resolve2, reject2) => {resolve2(3000)}).then(_res => {console.log(_res)}));
 })
 
-// promise1.then((res) => {
-//     console.log('suc', res)
-// }, (err) => {
-//     console.log('err', err)
-// })
-
 promise1.then(res => {
     console.log('suc', res)
-    return res;
+    // return res;
+    return new Promise((resolve, reject) => {
+        resolve(10001);
+    });
 }, err => {
     console.log('err', err)
     throw new Error('custom error2')
