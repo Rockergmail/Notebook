@@ -1,9 +1,16 @@
+<!--
+ * @description: 
+ * @author: xiangrong.liu
+ * @Date: 2021-05-17 11:07:53
+ * @LastEditors: xiangrong.liu
+ * @LastEditTime: 2021-05-17 17:09:37
+-->
 ### 为什么需要webpack
 webpack之前，是gulp，gulp之前是grunt，grunt之前，都需要手动处理如改环境变量、代码压缩、文件合并、注入变量/内容等重复工作，工作繁琐且重复。grunt和gulp都是任务式的，而gulp是用了管道技术优化了流程。webpack希望把代码编译、打包文件（方便组件化组织文件）、开发服务器、优化……让代码标准化输出。
 
 ### webpack有什么功能，关键功能是什么
 
-概念：modules、chunk、
+概念：modules、chunks、
 
 webpack有提供输入和输出（单页的配置、多页配合htmlPlugin的配置、hash(hash难题)、vendor、manifest）、Loaders、Plugins、环境选择、开发服务器、输出优化（代码压缩、提取css并异步加载、code spliting、tree-shaking、scope-hoisting、externals）、优化构建速度（多页提取common代码、对不变的代码/包打包成dll免得每次重新构建）、sourcemap、
 
