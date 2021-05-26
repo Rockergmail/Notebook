@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2021-05-17 11:07:53
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2021-05-18 17:07:16
+ * @LastEditTime: 2021-05-19 17:39:48
 -->
 ### 为什么需要webpack
 webpack之前，是gulp，gulp之前是grunt，grunt之前，都需要手动处理如改环境变量、代码压缩、文件合并、注入变量/内容等重复工作，工作繁琐且重复。grunt和gulp都是任务式的，而gulp是用了管道技术优化了流程。webpack希望把代码编译、打包文件（方便组件化组织文件）、开发服务器、优化……让代码标准化输出。
@@ -108,3 +108,35 @@ vite
 ### Reference
 1. https://juejin.cn/post/6844904094281236487
 2. https://zhuanlan.zhihu.com/p/44438844
+
+
+
+treeshaking
+
+跟modules相关的只是
+
+es6静态分析，不需要运行时分析，导入前不执行
+1. 有副作用的函数（包括iife），就不puer，不会修建
+2. 第三方组件库，需要引入bable插件，变成 import {x} from 'loadash/somemodule';才可以
+
+
+ES6的模块引入是静态分析的，故而可以在编译时正确判断到底加载了什么代码。引用了prototype
+分析程序流，判断哪些变量未被使用、引用，进而删除此代码。跟踪整个流程
+
+babel编译es6->es5，按照es6标准输出，会产生一些
+
+应该删的，不删。不删，觉得有风险：这些函数可能会产生副作用。
+
+如果告诉webpack这些是没有副作用的？babel转移的时候产生了可能有副作用的代码_createClass：
+函数的参数若是引用类型，对于它属性的操作，都是有可能会产生副作用的。因为首先它是引用类型，对它属性的任何修改其实都是改变了函数外部的数据。其次获取或修改它的属性，会触发getter或者setter，而getter、setter是不透明的，有可能会产生副作用。
+所以
+sideEffects配置
+/*@__PURE__*/标记
+
+
+注意资料有点旧，软件本身也意识到问题的存在，然后修补了
+
+
+https://juejin.cn/post/6844903544756109319
+https://juejin.cn/post/6844903544760336398
+https://zhuanlan.zhihu.com/p/32831172
