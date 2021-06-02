@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2021-06-02 14:52:59
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2021-06-02 15:05:48
+ * @LastEditTime: 2021-06-02 16:53:34
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -15,24 +15,68 @@
     <title>Document</title>
     <style>
         .hello {
-            width: 100%;
-            height: 100%;
+            width: 50px;
+            height: 50px;
             background: red;
+        }
+        .mock {
+            width: 50px;
+            height: 50px;
+            background: blue;
         }
     </style>
 </head>
 
 <body>
-    <div>
-        <div class="hello">hello, is me</div>
+    <div id="app">
+        <div class="hello">XXX</div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock" elementtiming="meaningful">YO</div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
     </div>
     <script>
-        window.addEventListener('DOMContenLoaded', () => {
-            let s = 0;
-            for (let i = 0; i < 1000000; i++) {
-                s += i
-            }
-            console.log(s)
+        window.addEventListener('DOMContentLoaded', () => {
+            //     let s = 0;
+            //     for (let i = 0; i < 1000000; i++) {
+            //         s += i
+            //     }
+            //     console.log(s)
+            setTimeout(() => {
+                document.body.appendChild(document.createTextNode('RockerX'))
+            }, 1000)
         })
         setTimeout(() => {
             const {
@@ -54,8 +98,31 @@
             // 性能监控系统，如何收集指标？
 
             const paint = performance.getEntriesByType('paint')
-            console.log(paint)
+            let fp = paint[0] // 第一个像素的时间
+            let fcp = paint[1] // 有内容：非空白，文字、图片
+            console.log('fp', fp && fp.startTime, 'fcp', fcp && fcp.startTime)
         }, 3000)
+
+        // FMP
+        new PerformanceObserver((entryList, observer) => {
+            console.log('fmp', entryList.getEntries())
+            observer.disconnect();
+        }).observe({entryTypes: ['element']});
+
+        // LCP 
+        new PerformanceObserver((entryList, observer) => {
+            console.log('lcp', entryList.getEntries())
+            observer.disconnect();
+        }).observe({entryTypes: ['largest-contentful-paint']});
+
+        // FID
+        new PerformanceObserver((entryList, observer) => {
+            firstInput = entryList.getEntries()[0]
+            if (!firstInput) return
+            let fid = firstInput.processingStart - firstInput.startTime;
+            console.log('fid', fid)
+            observer.disconnect();
+        }).observe({type: ['first-input'], buffered: true});
     </script>
 </body>
 

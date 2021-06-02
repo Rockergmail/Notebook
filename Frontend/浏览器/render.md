@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2021-06-01 15:12:40
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2021-06-02 14:50:09
+ * @LastEditTime: 2021-06-02 17:48:17
 -->
 
 浏览器的组成
@@ -98,3 +98,12 @@ https://developers.google.com/web/fundamentals/performance/critical-rendering-pa
 这个知识点，往前可以牵扯到：
 1. 从domain到下载过程，其中如何优化的问题。
 2. 再次渲染的问题，如何降低耗能，提高效率？什么会影响降低的
+
+http缓存的优化
+获取位置信息，就会强制重排
+css3产生图层
+脱离文档流
+
+defered有顺序，async无顺序，下载完就直接执行，最好不要操作dom
+
+css是如何解析的：先匹配子，再匹配父，减少通配符。css contain。
