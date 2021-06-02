@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2021-06-01 15:12:40
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2021-06-02 14:44:02
+ * @LastEditTime: 2021-06-02 14:50:09
 -->
 
 浏览器的组成
@@ -91,3 +91,10 @@ https://developers.google.com/web/fundamentals/performance/critical-rendering-pa
 最佳实践：
 1. script放到底部，加上async、defer也可以，注意区别
 2. css放在head里，尽早让浏览器去加载css。避免使用@import。可以考虑内联css。可以考虑用媒体查询来实现非阻塞渲染。
+
+什么场景：
+1. 优化、最佳实践（工程化，脚手架）
+
+这个知识点，往前可以牵扯到：
+1. 从domain到下载过程，其中如何优化的问题。
+2. 再次渲染的问题，如何降低耗能，提高效率？什么会影响降低的
