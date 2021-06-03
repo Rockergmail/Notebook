@@ -3,7 +3,7 @@
  * @author: xiangrong.liu
  * @Date: 2021-06-01 15:12:40
  * @LastEditors: xiangrong.liu
- * @LastEditTime: 2021-06-02 17:48:17
+ * @LastEditTime: 2021-06-03 11:57:37
 -->
 
 浏览器的组成
@@ -107,3 +107,7 @@ css3产生图层
 defered有顺序，async无顺序，下载完就直接执行，最好不要操作dom
 
 css是如何解析的：先匹配子，再匹配父，减少通配符。css contain。
+
+intersectionobserver
+
+raf
