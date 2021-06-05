@@ -1,0 +1,129 @@
+<!--
+ * @description: 
+ * @author: xiangrong.liu
+ * @Date: 2021-06-02 14:52:59
+ * @LastEditors: xiangrong.liu
+ * @LastEditTime: 2021-06-02 16:53:34
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .hello {
+            width: 50px;
+            height: 50px;
+            background: red;
+        }
+        .mock {
+            width: 50px;
+            height: 50px;
+            background: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="hello">XXX</div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock" elementtiming="meaningful">YO</div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+        <div class="mock"></div>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            //     let s = 0;
+            //     for (let i = 0; i < 1000000; i++) {
+            //         s += i
+            //     }
+            //     console.log(s)
+            setTimeout(() => {
+                document.body.appendChild(document.createTextNode('RockerX'))
+            }, 1000)
+        })
+        setTimeout(() => {
+            const {
+                fetchStart,
+                requestStart,
+                responseStart,
+                responseEnd,
+                domInteractive,
+                domContentLoadedEventEnd,
+                loadEventStart
+            } = performance.timing
+
+            let TTFB = responseStart - requestStart;
+            let TTI = domInteractive - fetchStart;
+            let DCL = domContentLoadedEventEnd - fetchStart;
+            let L = loadEventStart - fetchStart;
+
+            console.log("TTFB", TTFB, "TTI", TTI, "DCL", DCL, "L", L)
+            // 性能监控系统，如何收集指标？
+
+            const paint = performance.getEntriesByType('paint')
+            let fp = paint[0] // 第一个像素的时间
+            let fcp = paint[1] // 有内容：非空白，文字、图片
+            console.log('fp', fp && fp.startTime, 'fcp', fcp && fcp.startTime)
+        }, 3000)
+
+        // FMP
+        new PerformanceObserver((entryList, observer) => {
+            console.log('fmp', entryList.getEntries())
+            observer.disconnect();
+        }).observe({entryTypes: ['element']});
+
+        // LCP 
+        new PerformanceObserver((entryList, observer) => {
+            console.log('lcp', entryList.getEntries())
+            observer.disconnect();
+        }).observe({entryTypes: ['largest-contentful-paint']});
+
+        // FID
+        new PerformanceObserver((entryList, observer) => {
+            firstInput = entryList.getEntries()[0]
+            if (!firstInput) return
+            let fid = firstInput.processingStart - firstInput.startTime;
+            console.log('fid', fid)
+            observer.disconnect();
+        }).observe({type: ['first-input'], buffered: true});
+    </script>
+</body>
+
+</html>
