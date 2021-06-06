@@ -136,3 +136,6 @@ function cloneDeep5(source, hash = new WeakMap()) {
 }
 
 // TODO: 树的深度遍历 迭代 & stack方法
+
+// https://segmentfault.com/a/1190000016672263
+// https://github.com/yygmind/blog/issues/29

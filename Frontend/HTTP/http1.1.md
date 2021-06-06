@@ -8,8 +8,10 @@
 ### 无状态协议
 在建立连接的时候
 
-http tcp链路服用、pipeline管道机制（下一个请求发起不需要等待上一个请求返回，且并发有数量限制）、分块传输 。注意有对头阻塞问题
+http tcp链路服用、pipeline管道机制（下一个请求发起不需要等待上一个请求返回，且并发有数量限制）、分块传输 。注意有队头阻塞问题
 https://www.cnblogs.com/xiongmaomengnan/p/8425724.html
+
+<!-- TODO: http3的XXX和udp是如何实现的 -->
 
 
 http2 tcp多路复用，一个tcp
