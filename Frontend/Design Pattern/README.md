@@ -8,3 +8,11 @@ public static protected
 先有功能再有设计
 
 Namespace、Interface的使用
+
+
+常用的：
+
+创建型：
+  - 简单工厂、工厂方法、抽象工厂模式
+  - 单例模式：饱汉式（透明）、懒汉式、懒汉的优化
+  - 
