@@ -11,6 +11,15 @@
     <div class="div"></div>
     <script>
 
+        /**
+         * 一段时间触发一个函数，只触发一次
+         * 是触发时刻触发，还是时间段之后触发
+         * 可选项又怎么处理 
+         * 
+         * https://github.com/mqyqingfeng/Blog/issues/26
+         * https://github.com/yygmind/blog/issues/38
+         */
+
         const throttle = (cb, duration = 0) => {
             let timer;
             return () => {
@@ -51,7 +60,7 @@
                 let now = Date.now()
                 let remain = duration - (now - start)
                 context = this;
-                // TODO: 为什么此处是可以获取到cb的参数？
+                // TODO: 为什么此处是可以获取到cb的参数？其实是不行的。
                 args = Array.from(arguments)
                 // 如果倒计时到了，或者改变本地系统时间了
                 /**
