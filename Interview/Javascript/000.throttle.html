@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>.div{height: 3000px;}</style>
+</head>
+<body>
+    <div class="div"></div>
+    <script>
+
+        const throttle = (cb, duration = 0) => {
+            let timer;
+            return () => {
+                if (timer) return;
+                timer = setTimeout(() => {
+                    cb && cb()
+                    clearTimeout(timer)
+                    timer = null;
+                }, duration)
+            }
+        }
+
+        const throttle2 = function (cb, duration = 0){
+            let start;
+            let that = this;
+            return function() {
+                let now = Date.now()
+                if (!start) start = now
+                // console.log('throttle', start, now)
+                if (now - start >= duration) {
+                    cb && cb.apply(that, ...Array.from(arguments));
+                    start = Date.now();
+                }
+            }
+        } 
+
+        const throttle3 = function (cb, duration = 0, options = {leading: true, trailing: true}){
+            let start = 0, context, timer, args
+
+            const later = function(){
+                start = Date.now; 
+                clearTimeout(timer)
+                timer = null
+                cb && cb.apply(context, ...args)
+            }
+            
+            return function() {
+                let now = Date.now()
+                let remain = duration - (now - start)
+                context = this;
+                // TODO: 为什么此处是可以获取到cb的参数？
+                args = Array.from(arguments)
+                // 如果倒计时到了，或者改变本地系统时间了
+                /**
+                 * 1. remain < 0 一开始start为0，duration - now 肯定 < 0；
+                 * 2. remain < 0 、 remain > duration，系统改变了时间
+                 * 3. remain <= 0 倒计时完毕
+                 * */
+                if (remain <= 0 || remain > duration) {
+                    if (timer) {
+                        clearTimeout(timer)
+                        timer = null;
+                    } 
+                    // 此处为什么要赋值为now？而不是0？
+                    /**
+                     * 1. 此处的作用要考虑上面的if判断
+                     * 2. 如果连续执行，现在就是下一次的开始
+                     * 3. 如果是断开执行（>duration），remain是负数，也支持
+                     * */
+                    start = now; 
+                    cb && cb.apply(context, ...args)
+                // 注意这里，是时间段之中，新建一个timer。时间段中，意味着不止一次触发事件
+                } else if (!timer) {
+                    timer = setTimeout(later, duration)
+                }
+            }
+        } 
+
+
+        /**
+         * 1. leading === trailing === true，走逻辑1和逻辑2
+         * 2. leading === true, traling === false, 走逻辑1
+         * 3. leading === false, trailing === true,走逻辑2
+         */
+        const throttle4 = function (cb, duration = 0, options = {leading: true, trailing: true}){
+            let start = 0, args, context, timer
+
+            const later = () => {
+                // 如果是0，则执行line102的判断；如果为Date.now()，则会进行l为true和t为true
+                start = options.leading ? Date.now() : 0
+                clearTimeout(timer)
+                timer = null
+                cb && cb.apply(context, args)
+            }
+
+            function throttle() {
+                let now = Date.now()
+                // 如果设置了leading为false，也就是说一开始不执行   
+                if (!start && !options.leading) {
+                    start = now;
+                }
+                // line101, 如果start赋值了now，那么进入逻辑2
+                // line91，如果start赋值了Date.now()，有一个时间差，进入逻辑1
+                // line91，如果start赋值了0，那么进入逻辑2
+                let remain = duration - (now - start);
+                console.log(remain, duration, now, start)
+                context = this
+                args = Array.from(arguments)
+                if ((remain <= 0 || remain > duration)) {
+                    console.log('in logic1')
+                    if (timer) {
+                        clearTimeout(timer)
+                        timer = null
+                    }
+                    cb && cb.apply(context, ...args);
+                    start = now;
+                } else if (!timer && options.trailing) {
+                    console.log('in logic2')
+                    timer = setTimeout(later, duration)
+                }
+            }
+
+            throttle.cancel = () => {
+                timer && clearTimeout(timer)
+                timer = null
+                start = 0;
+            }
+
+            return throttle;
+        } 
+
+        const scrollEvent = () => {
+            console.log('i scrolled')
+        }
+        // document.addEventListener('scroll', throttle(scrollEvent, 1000))
+        // document.addEventListener('scroll', throttle2(scrollEvent, 1000))
+        document.addEventListener('scroll', throttle3(scrollEvent, 1000))
+    </script>
+</body>
+</html>
