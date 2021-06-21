@@ -70,3 +70,14 @@ vdom-diff算法
 ### Reference
 1. https://juejin.cn/post/6844904094281236487
 2. https://zhuanlan.zhihu.com/p/44438844
+
+
+源码
+
+1. 响应式
+2. 响应式和更新
+3. 虚拟dom与diff算法
+4. watch/computed
+5. 生命周期
+6. 组件与webcomponent
+7. 
