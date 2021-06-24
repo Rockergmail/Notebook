@@ -164,16 +164,19 @@ patch
 # 17.谈一谈对Vue组件化的理解
 关注点分离，代码更好管理
 
-18.Vue的组件渲染流程
+# 18.Vue的组件渲染流程
 create-component.js验证组件名是否合法-->拿到继承自Vue的组件构造函数-->变成了component: (xxx) => {}-->安装组件hooks（init、prepatch、insert、destroy）这里主要是合并用户写得钩子-->穿件vNode
 根组件更新-->render-->vm._update-->patch.js-->createEle-->createChildren-->createEle创建新节点-->createComponent-->执行hooks的init实例化并挂载
 ![?](../Interview/images/render-component.png)
 https://juejin.cn/post/6847902216934653966
 
 
-19.Vue组件更新流程
+# 19.Vue组件更新流程
 创建先父后子，挂载先子后父，递归
-20.Vue中异步组件原理
+
+patchVnode-->调用prepatch钩子-->属性替换
+
+# 20.Vue中异步组件原理
 
 1.函数组件的优势及原理
 2.Vue组件间传值的方式及之间区别
