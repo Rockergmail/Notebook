@@ -80,4 +80,124 @@ vdom-diff算法
 4. watch/computed
 5. 生命周期
 6. 组件与webcomponent
-7. 
+
+
+vue采用了mvvm的思想，专注于view层，但不是mvvm框架。采纳了mvvm的思想：更新view，映射到model的变化；model的变化映射到view上，不需要用户再写逻辑去关联。专注于view层，加了虚拟dom、diff、组件
+
+# 1.谈谈你对MVVM的理解？
+mvvm是一个模式，把代码区分为数据、视图、viewModel。视图和数据的通讯由vm自动完成。当数据更新的时候，自动更新视图；当视图更新的时候会自动更新数据；实现双向绑定。但Vue本身不是一个mvvm框架，它只关注view层，为此实现了组件化、虚拟dom+diff算法等功能，也有实现数据劫持功能，以实现双向绑定。
+
+# 2.请说一下Vue2及Vue3响应式数据的理解
+响应式数据，就是数据改变，自动更新视图。
+Vue2初始化的时候会执行render函数，触发了definedReative函数，其核心是Object.definedProperty，getter进行收集依赖，在收集依赖之前还会判断是否已经收集过了。当数据改变的时候，会触发setter进行发布更新，对比vdom，打补丁，更新试图。其中收集依赖和发布更新用到了观察者模式。
+definedproperty的缺点是对对象、数组的劫持不彻底：对象的新属性不会自动劫持，需要手动调用$set方法，同理删除的时候需要$delete。数组需要逐个元素去检测，如果是对象则进行对象劫持，效率低，当数据量大的时候影响性能。
+Vue3的用Proxy来代替使用.Proxy可以从底层支持对数组、对象修改的监控
+
+# 3.Vue中如何检测数组变化?
+对push、pop、unshift、shift、splice、concat进行重写。调用原来的方法之后，对指定的元素进行判断，如果是对象的话进行劫持，如果是数组的话就递归处理。
+
+# 4.Vue中如何进行依赖收集？
+初始化的时候，template编译成render的时候对模板中的变量进行收集依赖，放到在object.definedproperty的getter中
+
+# 5.如何理解Vue中模板编译原理
+template --> 正则匹配标签属性变量 -> render函数
+
+# 6.Vue生命周期钩子是如何实现的
+本质上就是回调函数。vue在软件不同的
+
+# 7.Vue的生命周期方法有哪些？一般在哪一步发送请求及原因
+整合选项，初始化Vue
+beforeCreated()
+数据劫持，初始化data、method、computed、watch
+created()
+模板编译
+beforeMounted()
+视图挂载
+mounted()
+数据改动
+beforeUpdate()
+vdom diff & patch & render
+updated()
+
+调用this.$destory
+beforeDestory()
+tear down watch data event等
+destory()
+
+
+
+# 8.Vue.mixin的使用场景和原理
+公用逻辑代码，原理就是合并对象，这里涉及到覆盖和冲突，优先级
+
+# 9.Vue组件data为什么必须是个函数？
+因为组件可能会被多次实例化，如果data直接返回对象，则这几个组件实例都共用同一个对象。不能做到隔离。
+
+
+# 10.nextTick在哪里使用？原理是?
+用在等待渲染完之后执行对应的逻辑，一般是在mounted钩子
+nextTick的原理是异步操作。setImmdiate0 setTimout0 ...
+js引擎的执行逻辑：同步、渲染、异步队列？？？
+
+TODO: eventloop
+
+# 11.computed和watch区别
+computed是有缓存的，当变量有变化的时候，才会重新计算
+watch，每次都会执行
+
+# 12.Vue.set方法是如何实现的
+就是Object.definedProperty，可能需要考虑层级的问题
+
+# 13.Vue为什么需要虚拟DOM
+dom操作是昂贵的，所以需要用js模拟dom，用js去对比vdom前后的差异，只做一次dom操作，节省开销
+
+# 14.Vue中diff算法原理
+create vdom
+diff
+patch
+
+# 15.既然Vue通过数据劫持可以精准探测数据变化，为什么还需要虚拟DOM进行diff检测差异
+把更新dom的操作合并，一次更新，避免频繁更新dom
+
+# 16.请说明Vue中key的作用和原理，谈谈你对它的理解
+一般会用在v-for，在渲染的时候，diff会根据key来判断节点是否能复用
+
+# 17.谈一谈对Vue组件化的理解
+关注点分离，代码更好管理
+
+18.Vue的组件渲染流程
+create-component.js验证组件名是否合法-->拿到继承自Vue的组件构造函数-->变成了component: (xxx) => {}-->安装组件hooks（init、prepatch、insert、destroy）这里主要是合并用户写得钩子-->穿件vNode
+根组件更新-->render-->vm._update-->patch.js-->createEle-->createChildren-->createEle创建新节点-->createComponent-->执行hooks的init实例化并挂载
+![?](../Interview/images/render-component.png)
+https://juejin.cn/post/6847902216934653966
+
+
+19.Vue组件更新流程
+创建先父后子，挂载先子后父，递归
+20.Vue中异步组件原理
+
+1.函数组件的优势及原理
+2.Vue组件间传值的方式及之间区别
+1).props实现原理
+2).$on , $emit
+3).$parent,$children
+4).$attrs, $listeners
+5).provide & inject
+6).$ref
+3.$attrs是为了解决什么问题出现的，provide和inject不能解决它能解决的问题吗？ v-bind="$attrs" v-on="$listeners"
+4.v-if和v-for哪个优先级更高？
+5.v-if，v-model，v-for的实现原理
+普通元素上的v-model指令
+组件上的v-model指令
+6.Vue中slot是如何实现的？什么时候使用它？
+7.Vue.use是干什么的？原理是什么？
+8.组件中写name选项有哪些好处及作用？
+9.Vue事件修饰符有哪些？其实现原理是什么？
+10.Vue中.sync修饰符的作用，用法及实现原理
+11.如何理解自定义指令
+12.keep-alive平时在哪里使用？原理是？
+13.Vue-Router有几种钩子函数，具体是什么及执行流程是怎样的?
+14.Vue-Router的两种模式的区别
+15.谈一下你对vuex的个人理解
+16.mutation和action的区别
+17.Vue中的性能优化有哪些？
+18.Vue中使用了哪些设计模式?
