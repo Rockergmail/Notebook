@@ -148,12 +148,41 @@ watch，每次都会执行
 就是Object.definedProperty，可能需要考虑层级的问题
 
 # 13.Vue为什么需要虚拟DOM
-dom操作是昂贵的，所以需要用js模拟dom，用js去对比vdom前后的差异，只做一次dom操作，节省开销
+dom操作是消耗性能的，当大量的dom操作会导致渲染出的效果出问题，或者渲染慢。为了解决这个问题，用js的VNode对象模拟节点，数据改变之后，模板生成了新的VNode，旧VNode和新VNode对比，把增加删除修改节点的操作整合起来操作一次，这样的话只需要更新一次dom树，大大降低性能损耗。
+
+<!-- https://vue-js.com/learn-vue/virtualDOM/#_3-vue%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9Fdom -->
+vNode模拟以下节点：元素节点、文本节点、注释节点、组件节点、函数组件节点、克隆节点
+
+```html
+元素节点：<div></div>
+文本节点：123
+静态节点：<div>123</div>（第一次渲染之后，后面的渲染不会改变，所以是静态节点）
+
+```
 
 # 14.Vue中diff算法原理
-create vdom
-diff
-patch
+diff算法核心就是patch函数，对oldVNode和vNode一层一层对比，基于oldVNode做新增、删除、更新操作
+
+1. 如果没有oldVNode，则针对VNode创建元素并挂载
+2. 如果是oldVNode和VNode是同一个节点（一样的标签，一样的key），则进行更新节点patchVNode
+![](../images/patchVnode.png)
+
+更新子节点，在oldChildren和children两两比较，无非有以下几种可能：（基于oldChildren）
+1. 删除节点
+2. 更新节点（同patchVnode）
+3. 添加节点（注意需要添加到未处理的节点之前，否则会影响后续的添加）
+4. 移动节点（跟添加节点同理，需要移动到未处理的节点之前）
+
+oldChildren和children两两对比算法优化：
+1. 暴力两层for循环，对比节点。时间复杂度0(n^2)。源码虽然用了map来描述oldChildren，但是都逃不过每个oldChilren元素单独for循环children来对比，所以还是会导致时间复杂度0(n^2)
+2. （循环从两边向中间收拢）双指针对比：oldChildren和children都有头尾两个指针oldStartIdx、oldEndIdx、newStartIdx、newEndIdx。先osi和nsi对比，如果节点相同，则进行patchVNode更新，否则对比osi和nei对比，如果节点相同，则进行移动节点并更新节点，否则对比oei和nei对比，如果节点相同，则更新节点，否则对比oei和nsi对比，如果节点相同，则进行移动节点并更新节点，否则用方法1暴力破解（注意这里只有nsi++）。当osi>oei，children剩下的节点就需要新增；当nsi>sei，oldChildren剩下的节点就需要删除
+
+在迭代的过程，我们移动元素，会影响处理。那么diff算法是如果做到移动节点的时候不影响呢？其实删除节点、更新节点、添加接点、移动节点，都是调用dom api的，所以不会导致
+
+最理想的情况下，全部都走优化的算法，则O(n)，最不理想的情况下爱，都走暴力算法，则O(n^2)，所以diff的时间复杂度为O(nlog^n)
+
+diff 算法是一种通过同层的树节点进行比较的高效算法，避免了对树进行逐层搜索遍历，所以时间复杂度只有 O(n)。
+
 
 # 15.既然Vue通过数据劫持可以精准探测数据变化，为什么还需要虚拟DOM进行diff检测差异
 把更新dom的操作合并，一次更新，避免频繁更新dom
