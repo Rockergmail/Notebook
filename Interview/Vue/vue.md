@@ -9,6 +9,8 @@
 ### 为什么需要vue
 mvvm
 
+数据驱动视图 UI=render(data) 
+
 ### vue有什么功能，关键功能是什么
 mvvm
 vdom
@@ -93,6 +95,15 @@ Vue2初始化的时候会执行render函数，触发了definedReative函数，�
 definedproperty的缺点是对对象、数组的劫持不彻底：对象的新属性不会自动劫持，需要手动调用$set方法，同理删除的时候需要$delete。数组需要逐个元素去检测，如果是对象则进行对象劫持，效率低，当数据量大的时候影响性能。
 Vue3的用Proxy来代替使用.Proxy可以从底层支持对数组、对象修改的监控
 
+
+definedproperty
+get收集依赖:array object分别如何
+set通知：array如何监听修改
+
+收集依赖其实就是在Dep中添加wathcher.
+
+初始化$mount-->new Watcher(mountComponent)-->get()-->添加依赖-->mounteComponent作为依赖，做了一个绑定。当改动的时候，直接调用对应的mountComponent方法
+
 # 3.Vue中如何检测数组变化?
 对push、pop、unshift、shift、splice、concat进行重写。调用原来的方法之后，对指定的元素进行判断，如果是对象的话进行劫持，如果是数组的话就递归处理。
 
@@ -148,7 +159,10 @@ watch，每次都会执行
 就是Object.definedProperty，可能需要考虑层级的问题
 
 # 13.Vue为什么需要虚拟DOM
-dom操作是消耗性能的，当大量的dom操作会导致渲染出的效果出问题，或者渲染慢。为了解决这个问题，用js的VNode对象模拟节点，数据改变之后，模板生成了新的VNode，旧VNode和新VNode对比，把增加删除修改节点的操作整合起来操作一次，这样的话只需要更新一次dom树，大大降低性能损耗。
+
+WHY-HOW(with WHAT)，降维构建给对方听，from where to where
+
+频繁的dom操作、整颗dom树重新渲染会导致渲染性能降低，渲染效果差。如果我们将js对象模拟dom节点，初始化渲染的时候我们得到一个vNode，在数据更新之后模板编程成新的vNode。我们把这两个vNode做对比，当大量的dom操作会导致渲染出的效果出问题，或者渲染慢。为了解决这个问题，用js的VNode对象模拟节点，数据改变之后，模板生成了新的VNode，旧VNode和新VNode对比，把要修改的进行修改，而不用一次性更新整颗dom树，大大降低性能损耗。
 
 <!-- https://vue-js.com/learn-vue/virtualDOM/#_3-vue%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9Fdom -->
 vNode模拟以下节点：元素节点、文本节点、注释节点、组件节点、函数组件节点、克隆节点
@@ -164,8 +178,12 @@ vNode模拟以下节点：元素节点、文本节点、注释节点、组件节
 diff算法核心就是patch函数，对oldVNode和vNode一层一层对比，基于oldVNode做新增、删除、更新操作
 
 1. 如果没有oldVNode，则针对VNode创建元素并挂载
-2. 如果是oldVNode和VNode是同一个节点（一样的标签，一样的key），则进行更新节点patchVNode
+2. 如果是oldVNode和VNode是相同节点（一样的标签，一样的key，一个的数据），则进行更新节点patchVNode
 ![](../images/patchVnode.png)
+
+更新节点操作，无非是以下几种操作：
+1. 如果节点不同，根据情况添加节点、删除节点
+2. 更新节点：如果vNode没有文本节点，且oldVNode和vNode都有字节点，则进行更新子节点
 
 更新子节点，在oldChildren和children两两比较，无非有以下几种可能：（基于oldChildren）
 1. 删除节点
@@ -175,7 +193,7 @@ diff算法核心就是patch函数，对oldVNode和vNode一层一层对比，基�
 
 oldChildren和children两两对比算法优化：
 1. 暴力两层for循环，对比节点。时间复杂度0(n^2)。源码虽然用了map来描述oldChildren，但是都逃不过每个oldChilren元素单独for循环children来对比，所以还是会导致时间复杂度0(n^2)
-2. （循环从两边向中间收拢）双指针对比：oldChildren和children都有头尾两个指针oldStartIdx、oldEndIdx、newStartIdx、newEndIdx。先osi和nsi对比，如果节点相同，则进行patchVNode更新，否则对比osi和nei对比，如果节点相同，则进行移动节点并更新节点，否则对比oei和nei对比，如果节点相同，则更新节点，否则对比oei和nsi对比，如果节点相同，则进行移动节点并更新节点，否则用方法1暴力破解（注意这里只有nsi++）。当osi>oei，children剩下的节点就需要新增；当nsi>sei，oldChildren剩下的节点就需要删除
+2. 两个children有两个头和尾的指针，从两边向中间靠拢迭代：oldChildren和children都有头尾两个指针oldStartIdx、oldEndIdx、newStartIdx、newEndIdx。先osi和nsi对比，如果节点相同，则进行patchVNode更新，否则对比osi和nei对比，如果节点相同，则进行移动节点并更新节点，否则对比oei和nei对比，如果节点相同，则更新节点，否则对比oei和nsi对比，如果节点相同，则进行移动节点并更新节点，否则用方法1暴力破解（注意这里只有nsi++）。当osi>oei，children剩下的节点就需要新增；当nsi>sei，oldChildren剩下的节点就需要删除
 
 在迭代的过程，我们移动元素，会影响处理。那么diff算法是如果做到移动节点的时候不影响呢？其实删除节点、更新节点、添加接点、移动节点，都是调用dom api的，所以不会导致
 
