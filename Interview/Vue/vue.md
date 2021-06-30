@@ -159,8 +159,9 @@ js引擎的执行逻辑：同步、渲染、异步队列？？？
 TODO: eventloop
 
 # 11.computed和watch区别
-computed是有缓存的，当变量有变化的时候，才会重新计算
-watch，每次都会执行
+computed和watch都是基于Watcher来实现的
+computed属性是具备缓存的，依赖的值不发生变化，对其取值时计算属性方法不会重新执行
+watch则是监控值的变化，当值发生变化时调用对应的回调函数
 
 # 12.Vue.set方法是如何实现的
 就是Object.definedProperty，可能需要考虑层级的问题
