@@ -102,15 +102,6 @@ mvvm是一个模式，把代码区分为数据、视图、viewModel。视图和�
 3. 数组里面每个元素都需要reactive
 Vue3的用Proxy来代替使用.Proxy可以从底层支持对数组、对象修改的监控
 
-
-definedproperty
-get收集依赖:array object分别如何
-set通知：array如何监听修改
-
-收集依赖其实就是在Dep中添加wathcher.
-
-初始化$mount-->new Watcher(mountComponent)-->get()-->添加依赖-->mounteComponent作为依赖，做了一个绑定。当改动的时候，直接调用对应的mountComponent方法
-
 # 3.Vue中如何检测数组变化?
 对push、pop、unshift、shift、splice、concat进行重写。调用原来的方法之后，对指定的元素进行判断，如果是对象的话进行劫持，如果是数组的话就递归处理。
 
@@ -118,7 +109,7 @@ set通知：array如何监听修改
 初始化的时候，template编译成render的时候对模板中的变量进行收集依赖，放到在object.definedproperty的getter中
 
 # 5.如何理解Vue中模板编译原理
-template --> 正则匹配标签属性变量 -> render函数
+template --> 先解析html(正则+游标)，生成对应ast树，再解析文本，其中文本是否包括变量和过滤器，生成对应的AST -> render函数 --> VNode --> patch --> 更新DOM
 
 # 6.Vue生命周期钩子是如何实现的
 本质上就是回调函数。vue在软件不同的
@@ -149,7 +140,6 @@ destory()
 
 # 9.Vue组件data为什么必须是个函数？
 因为组件可能会被多次实例化，如果data直接返回对象，则这几个组件实例都共用同一个对象。不能做到隔离。
-
 
 # 10.nextTick在哪里使用？原理是?
 用在等待渲染完之后执行对应的逻辑，一般是在mounted钩子
