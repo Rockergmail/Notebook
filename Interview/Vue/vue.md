@@ -115,25 +115,26 @@ template --> 先解析html(正则+游标)，生成对应ast树，再解析文本
 本质上就是回调函数。vue在软件不同的
 
 # 7.Vue的生命周期方法有哪些？一般在哪一步发送请求及原因
-整合选项，初始化Vue
+new Vue()
+初始化事件、生命周期
 beforeCreated()
-数据劫持，初始化data、method、computed、watch
+数据劫持
 created()
-模板编译
+模板编译成render函数
 beforeMounted()
-视图挂载
+视图挂载到el上
 mounted()
+
 数据改动
 beforeUpdate()
 vdom diff & patch & render
 updated()
 
-调用this.$destory
 beforeDestory()
-tear down watch data event等
+卸载组件、事件监听
 destory()
 
-
+created发起请求，把数据赋值在data上
 
 # 8.Vue.mixin的使用场景和原理
 公用逻辑代码，原理就是合并对象，这里涉及到覆盖和冲突，优先级
@@ -142,11 +143,18 @@ destory()
 因为组件可能会被多次实例化，如果data直接返回对象，则这几个组件实例都共用同一个对象。不能做到隔离。
 
 # 10.nextTick在哪里使用？原理是?
-用在等待渲染完之后执行对应的逻辑，一般是在mounted钩子
-nextTick的原理是异步操作。setImmdiate0 setTimout0 ...
-js引擎的执行逻辑：同步、渲染、异步队列？？？
+nextTick是希望回调函数在DOM更新之后执行。
 
-TODO: eventloop
+数据变更之后不会马上更新dom，而是放到一个队列里，方便去重，然后异步更新dom
+
+如何保证是dom更新之后才执行？只需要保证先异步执行watcher，再异步执行回调就ok
+
+nextTick的原理是实现异步操作：Promise > MutationObserve > setImmediate > setTimeout
+
+牵涉到js的运行机制：js是单线程，是基于事件循环的：
+a. 所有同步任务都在主线程上执行，形成执行栈
+b. 当异步任务有结果，会放到任务队列里。任务队列有宏任务（setTimeout、setImmediate、postMessage）、微任务（promise、MutationObserver）
+c. 主线程的执行过程叫一个tick，当所有同步任务做完，就调度任务队列并执行
 
 # 11.computed和watch区别
 computed和watch都是基于Watcher来实现的
@@ -232,10 +240,13 @@ patchVnode-->调用prepatch钩子-->属性替换
 5).provide & inject
 6).$ref
 3.$attrs是为了解决什么问题出现的，provide和inject不能解决它能解决的问题吗？ v-bind="$attrs" v-on="$listeners"
-4.v-if和v-for哪个优先级更高？
-5.v-if，v-model，v-for的实现原理
-普通元素上的v-model指令
-组件上的v-model指令
+
+# 4.v-if和v-for哪个优先级更高？
+once > for > if > template > slot
+如果希望if优先，则在上层添加template v-if
+
+# 5.v-if，v-model，v-for的实现原理
+
 6.Vue中slot是如何实现的？什么时候使用它？
 7.Vue.use是干什么的？原理是什么？
 8.组件中写name选项有哪些好处及作用？
