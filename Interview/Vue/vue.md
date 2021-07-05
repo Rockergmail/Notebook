@@ -209,13 +209,16 @@ diff 算法是一种通过同层的树节点进行比较的高效算法，避免
 
 
 # 15.既然Vue通过数据劫持可以精准探测数据变化，为什么还需要虚拟DOM进行diff检测差异
-把更新dom的操作合并，一次更新，避免频繁更新dom
+1. 给每个属性都添加watcher会降低性能
+2. 粒度太细反而不利于dom的更新，次序问题
 
 # 16.请说明Vue中key的作用和原理，谈谈你对它的理解
-一般会用在v-for，在渲染的时候，diff会根据key来判断节点是否能复用
+1. render patch的时候会判断是否同一个节点，是的话就进行更新节点进而对比
+2. 当两个节点都是静态节点，且key都是相同的，可以复用节点
 
 # 17.谈一谈对Vue组件化的理解
-关注点分离，代码更好管理
+组件化可以实现代码高内聚低耦合，提高开发效率，代码可服用
+单向数据流：属性、自定义事件、slot
 
 # 18.Vue的组件渲染流程
 create-component.js验证组件名是否合法-->拿到继承自Vue的组件构造函数-->变成了component: (xxx) => {}-->安装组件hooks（init、prepatch、insert、destroy）这里主要是合并用户写得钩子-->穿件vNode
@@ -229,17 +232,16 @@ https://juejin.cn/post/6847902216934653966
 
 patchVnode-->调用prepatch钩子-->属性替换
 
-# 20.Vue中异步组件原理
+# 1.函数组件的优势及原理
 
-1.函数组件的优势及原理
-2.Vue组件间传值的方式及之间区别
+# 2.Vue组件间传值的方式及之间区别
 1).props实现原理
 2).$on , $emit
 3).$parent,$children
 4).$attrs, $listeners
 5).provide & inject
 6).$ref
-3.$attrs是为了解决什么问题出现的，provide和inject不能解决它能解决的问题吗？ v-bind="$attrs" v-on="$listeners"
+# 3.$attrs是为了解决什么问题出现的，provide和inject不能解决它能解决的问题吗？ v-bind="$attrs" v-on="$listeners"
 
 # 4.v-if和v-for哪个优先级更高？
 once > for > if > template > slot
