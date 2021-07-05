@@ -242,20 +242,14 @@ patchVnode-->调用prepatch钩子-->属性替换
 5).provide & inject，跨级传输
 6).EventBus $on, $emit
 7).Vuex
-# 3.$attrs是为了解决什么问题出现的，provide和inject不能解决它能解决的问题吗？ v-bind="$attrs" v-on="$listeners"
 
-# 4.v-if和v-for哪个优先级更高？
+# 3.v-if和v-for哪个优先级更高？
 once > for > if > template > slot
 如果希望if优先，则在上层添加template v-if
 
-# 5.v-if，v-model，v-for的实现原理
+# 7.Vue.use是干什么的？原理是什么？
+安装插件，调用install方法，这样插件就可以不需要依赖vue
 
-6.Vue中slot是如何实现的？什么时候使用它？
-7.Vue.use是干什么的？原理是什么？
-8.组件中写name选项有哪些好处及作用？
-9.Vue事件修饰符有哪些？其实现原理是什么？
-10.Vue中.sync修饰符的作用，用法及实现原理
-11.如何理解自定义指令
 12.keep-alive平时在哪里使用？原理是？
 13.Vue-Router有几种钩子函数，具体是什么及执行流程是怎样的?
 14.Vue-Router的两种模式的区别
