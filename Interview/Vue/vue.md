@@ -233,14 +233,15 @@ https://juejin.cn/post/6847902216934653966
 patchVnode-->调用prepatch钩子-->属性替换
 
 # 1.函数组件的优势及原理
+无状态、无生命周期、无this，可以渲染一些静态的组件，如404、无权限、加载完毕等等。作为性能优化，初始化比有状态组件快得多；支持多个根节点
 
 # 2.Vue组件间传值的方式及之间区别
-1).props实现原理
-2).$on , $emit
-3).$parent,$children
-4).$attrs, $listeners
-5).provide & inject
-6).$ref
+1).props $emit $on
+3).$parent $children $ref $root
+4).$attrs, $listeners ，继承父级的props和事件，批量
+5).provide & inject，跨级传输
+6).EventBus $on, $emit
+7).Vuex
 # 3.$attrs是为了解决什么问题出现的，provide和inject不能解决它能解决的问题吗？ v-bind="$attrs" v-on="$listeners"
 
 # 4.v-if和v-for哪个优先级更高？
