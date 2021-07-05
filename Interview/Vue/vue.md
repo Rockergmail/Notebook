@@ -257,3 +257,37 @@ once > for > if > template > slot
 16.mutation和action的区别
 17.Vue中的性能优化有哪些？
 18.Vue中使用了哪些设计模式?
+
+### Vuex vs Redux vs mobX vs Flux
+
+Store：
+状态、改状态的函数。
+特点：
+1. 状态通过action来修改
+2. state可以直接修改，所以无法跟踪状态是如何修改的。通过action去修改state可以实现记录state的修改、保存当前state的快照、实现时间旅行的debug的调试工具
+   
+Flux：一种状态模式：
+1. 多个store
+2. 通过action来发起修改store
+3. dispatcher接收所有actions，然后派发给所有stores然后修改状态
+4. 如此实现了数据的单向流动：action -> dispatcher -> store -> view -> action   
+
+Redux：
+1. 一个store, state只读
+2. 通过action creator来发起同步修改store，store.dispatch('xxx')
+3. store调用reducer（纯函数），传入旧的state和action，生成新的state
+4. 监听到state改变，更新订阅
+5. 如果需要异步操作，则需要用中间件：redux-thunk / redux-promise / redux-saga
+6. 框架无关
+
+Vuex:
+1. 一个store
+2. 通过commit mutation进行同步修改state
+3. 通过dispatch action可以进行异步操作，拿到结果之后再commit来修改state
+4. 支持模块化
+5. 框架有关
+
+MobX:
+1. 支持多个store
+2. 对state进行监测
+3. 当state改边的时候，引用到对应属性都要更新
