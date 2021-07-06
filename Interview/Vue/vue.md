@@ -267,7 +267,7 @@ Store：
 2. state可以直接修改，所以无法跟踪状态是如何修改的。通过action去修改state可以实现记录state的修改、保存当前state的快照、实现时间旅行的debug的调试工具
    
 Flux：一种状态模式：
-1. 多个store
+1. 多个store，缺点：多个store之间会有依赖，数据处理还在store里面进行
 2. 通过action来发起修改store
 3. dispatcher接收所有actions，然后派发给所有stores然后修改状态
 4. 如此实现了数据的单向流动：action -> dispatcher -> store -> view -> action   
@@ -292,8 +292,20 @@ MobX:
 2. 对state进行监测
 3. 当state改边的时候，引用到对应属性都要更新
 
+状态管理关心：
+1. 状态如何修改，维护状态
+2. 状态修改之后如何更新
 
-状态个数
-同步修改状态流
-异步修改状态流
-特别的地方
+状态，改变
+无法追踪状态改变，无法保存当前状态的快照，无法做状态的时间穿梭等功能（对于调试工具来说）
+状态，状态改变的动作和流程，异步怎么做，状态改变之后
+
+|        | store  | flux（只是一个模式） | redux | vuex | mobx |
+|  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |
+| 状态个数  | 一个 | 多个 | 一个 | 一个 | 多个 |
+| 同步修改状态流  | 函数操作state | action -> dispatcher -> state | dispatch action -> reducer -> new state -> 更新 | commit mutation -> state -> update view | --
+| 异步修改状态流  | 函数操作state | 无考虑 | 中间件（thunk/promise/saga）action creator的操作 | dispatch action -> commit mutation -> state -> update view | --
+| 优点  | 简单 | 1.数据单向流动 action -> state -> view -> action | 1.store是只读的，确保了状态不能直接修改；2.通过reducer纯函数返回一个新的state；3.其他框架可接入 | 1.考虑到异步操作，提供接口，方便使用；2.不需要考虑状态改变如何更新视图，已经自动绑定；3.支持模块化/getters/辅助函数 | 数据劫持，更新粒度小
+| 缺点  | 1.数据流不确定；2.无法知道数据是怎么被修改的，无法保存状态快照，无法实现状态时间旅行 |  1.多个store可能互相依赖，增加了复杂度；2.状态的修改需要在state进行 | 1.异步需要单独引入中间件来操作 | 1.只能vue使用 | 规模大的应用不方便管理
+
+
